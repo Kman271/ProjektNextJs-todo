@@ -3,7 +3,7 @@ import React from "react";
 import SubmitButton from "@/components/SubmitButton";
 import {useRouter} from "next/navigation";
 
-export default function LoginForm(username: string) {
+export default function LoginForm() {
 
     const router = useRouter()
     let name = "Tomek"
