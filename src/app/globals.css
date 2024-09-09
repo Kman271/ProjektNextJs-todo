@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
+}
+*:focus {
+  outline: none;
+}
+h1, h2, h3, p {
+  --text-color: white;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* sizes
+0.25 rem
+0.50 rem
+0.75 rem
+1.00 rem
+1.25 rem
+1.75 rem
+2.50 rem
+3.75 rem
+6.25 rem
+10 rem
+ */
+
+h1, h2, h3, p {
+  color: var(--text-color);
+}
+h1 {
+  font-size: 6.25rem;
+  line-height: 6rem;
+  font-weight: 600;
+}
+
+h2 {
+  font-size: 3.75rem;
+  line-height: 4.25rem;
+  font-weight: 500;
+}
+
+h3 {
+  font-size: 2.50rem;
+  line-height: 3rem;
+  font-weight: 400;
+}
+
+p {
+  font-size: 1.25rem;
+  line-height: 1.5rem;
+  font-weight: 300;
+}
+
+@layer components {
+  .cubeAnimation {
+    animation: itemAnimate 25s linear infinite;
+  }
+
+  @keyframes itemAnimate {
+    0%{
+      transform: translateY(0) rotate(0deg);
+      opacity: 1;
+    }
+
+    100%{
+      transform: translateY(-100vh) rotate(720deg);
+      opacity: 0;
+    }
+
+  }
+
+
+}
