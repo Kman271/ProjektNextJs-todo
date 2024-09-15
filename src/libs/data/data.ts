@@ -1,85 +1,65 @@
+'use server'
+import {noteJsonType} from "@/libs/types/noteType";
+import {dbConnect, dbDisconnect} from "@/libs/data/db";
+import {switchType} from "@/libs/types/dataTypes";
 
-import {noteJsonType, noteType, switchType} from "@/libs/types/noteType";
-import {userJsonType, userType} from "@/libs/types/dataTypes";
-import data from './data.json'
-import {sql} from '@vercel/postgres';
-
-
-
-export async function postgresGetData(username : string, type: "pending" | "completed") {
+export async function getData(userToken : string, type: switchType): Promise<noteJsonType[]> {
 
     let tableName: string;
-    let isDone: boolean;
+    let id_name: string;
 
     switch (type) {
-        case "completed":
-            tableName = "dones";
-            isDone = true;
+
+        case 'completed':
+            tableName = "dones"
+            id_name = "done_id"
             break;
 
-        case "pending":
-            tableName = "todos";
-            isDone = false;
+        case 'pending':
+            tableName = "todos"
+            id_name = "todo_id"
             break;
 
         default:
-            throw new Error("Wrong type");
+            throw new Error(`Unsupported type "${type}"`);
+
     }
 
+    const client = await dbConnect()
 
-    let rows: any , fields: any;
+    let response;
     try {
-        ( {rows, fields} = await sql
-            `SELECT todo_id, task_txt, difficulty FROM ${tableName}
-        INNER JOIN users on todos.user_id = (
-            SELECT user_id FROM users
-            WHERE username = '${username}'
-            LIMIT 1);` )
-    } catch (error) {
-        console.error('Error: ' + error);
-        throw error;
-    }
-    console.log(`rows = ${rows} \n fields = ${fields}`);
+        // console.log("NODE_ENV:", process.env.NODE_ENV);
 
-    let data: noteJsonType[] = [
+        console.log("Getting data...")
+        const query = `SELECT ${id_name}, task_txt, difficulty
+                       FROM ${tableName}
+                       INNER JOIN users on ${tableName}.user_id = (
+                            SELECT user_id FROM users
+                            WHERE username = $1 LIMIT 1);`;
+        // console.log("Query sent, query:", query)
+        response = await client.query(query, [userToken]);
+        // console.log("Response:", response)
+        console.log("Successfully received data.")
+    } catch (error: any) { console.error('DB Error:', error, "response:", response); throw error;
+    } finally { await dbDisconnect(client);}
+
+    // console.log('Response:', response.rows[0]);
+
+    let data: noteJsonType[] = response.rows.map( row => (
         {
-            ID: 0,
-            isDone: false,
-            difficulty: "",
-            text: "Some text"
+            ID: row[id_name],
+            isDone: type == 'completed',
+            difficulty: row["difficulty"],
+            task_txt: row["task_txt"]
         }
-    ]
+    ))
+
+    // console.log(data)
 
     return data;
 }
 
-export async function getData(userToken : string, type: switchType): Promise<noteJsonType[]> {
-
-    // let dataJSON: userJsonType[] = data;
-    // let userData: userJsonType | undefined = dataJSON.filter((field) => field.Username == userToken).at(0);
-    // let finData: noteJsonType[];
-    //
-    // if (userData == undefined) {
-    //     throw new Error(`Cannot retrieve user ${userToken} data`);
-    // }
-    //
-    // switch (type) {
-    //     case "pending":
-    //         finData = userData.todo;
-    //         break;
-    //
-    //     case "completed":
-    //         finData = userData.finished;
-    //         break;
-    //
-    //     default:
-    //         throw new Error(`Unknown type "${type}"`);
-    // }
-
-        // return finData;
-    return await postgresGetData(userToken, type);
-}
-
-export function updateList() {
+export async function updateList() {
     return;
 }

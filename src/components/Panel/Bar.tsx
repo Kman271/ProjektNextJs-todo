@@ -9,7 +9,7 @@ export default function Bar({percent = 0}: { percent: number }) {
     return (
         <div className='flex items-center basis-[60rem] flex-grow-0 flex-shrink h-full'>
             <div
-                className="flex items-center w-[80%] h-12 mr-auto bg-gray-200 rounded-md outline outline-4 outline-gray-200 overflow-hidden">
+                className="flex items-center w-[80%] h-12 mr-auto bg-gradient-to-br from-gray-700 to-gray-800 rounded-md outline outline-4 outline-gray-200 shadow-md overflow-hidden">
                 <div
                     className={`flex items-center h-full bg-gradient-to-r from-indigo-500 via-rose-500 to-fuchsia-500 rounded-r-md z-20`}
                     style={{

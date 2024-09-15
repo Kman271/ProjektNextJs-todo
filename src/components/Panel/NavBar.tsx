@@ -1,13 +1,12 @@
 'use client'
 import NavBtn from "@/components/Panel/NavBtn";
 import {useState} from "react";
-import {number} from "prop-types";
 
-export default function NavBar({elementsCount, elPerPage, currentPage} : {elementsCount: number, elPerPage: number, currentPage: number, onClick: (page: number) => void}) {
+export default function NavBar({elementsCount, elPerPage} : {elementsCount: number, elPerPage: number} ) {
 
     const [currPage, setCurrPage] = useState(1);
     function clickHandler(num: number) {
-         setCurrPage( a => a+number )
+         setCurrPage( a => a+num )
     }
 
     let pagesCount = Math.ceil(elementsCount/elPerPage)
@@ -17,7 +16,7 @@ export default function NavBar({elementsCount, elPerPage, currentPage} : {elemen
         <ul className='flex justify-center items-center space-x-2'>
             {pages?.map((item, i) =>
                 <li key={i} >
-                    <NavBtn label={item} isCurrentPage={i == currentPage} onClick={setCurrPage}/>
+                    <NavBtn label={item} isCurrentPage={i == currPage} onClick={clickHandler}/>
                 </li>
             )}
         </ul>

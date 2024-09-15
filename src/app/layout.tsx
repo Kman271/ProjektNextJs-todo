@@ -18,8 +18,8 @@ export default function RootLayout(
     {children}: Readonly<{ children: React.ReactNode; }>
 ) {
   return (
-      <html lang="en" className="text-[1.2rem] h-full">
-        <body className={`${poppins.className} flex flex-col h-full items-center justify-center z-10
+      <html lang="en" className="text-[1.2rem] h-full overflow-hidden">
+        <body className={`${poppins.className} flex flex-col h-full overflow-hidden items-center justify-center z-10
         `}>
           {children}
 

@@ -5,7 +5,7 @@ export default function UserPanelLayout(
 ) {
     return(
         <div className="flex flex-row w-full h-full">
-            <div className="flex-shrink-0 basis-[14rem] bg-gradient-to-b from-gray-800 to-gray-900 z-[3]">
+            <div className="flex-shrink-0 basis-[14rem] h-full bg-gradient-to-b from-gray-800 to-gray-900 bg-cover bg-fixed z-[3]">
                 <nav className="flex flex-col h-full w-full">
                     <div
                         className='flex flex-row justify-center items-center w-full basis-[5rem] flex-shrink-0 space-x-2'>

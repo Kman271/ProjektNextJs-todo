@@ -1,20 +1,13 @@
 import SearchBar from "@/components/Panel/SearchBar";
 import React from "react";
 import CheckBar from "@/components/Panel/CheckBar";
-import {diffType, noteJsonType, noteType} from "@/libs/types/noteType";
+import {noteJsonType} from "@/libs/types/noteType";
 import {getData} from "@/libs/data/data";
 
 
 export default async function CompletedPage({params} : {params : {userToken : string}} ) {
 
     let dataJson: noteJsonType[] = await getData(params.userToken, 'completed');
-    let data: noteType[] = dataJson.map(e => (
-        {
-            ...e,
-            difficulty: e.difficulty as diffType,
-            isDone: e.isDone ? 'completed' : 'pending',
-        }
-    ))
 
     return(
         <div className='h-full w-full flex items-start justify-center'>
@@ -25,9 +18,9 @@ export default async function CompletedPage({params} : {params : {userToken : st
             bg-gradient-to-br from-gray-300 to-gray-400
             border-2 border-gray-600 shadow-md shadow-black overflow-hidden rounded-md'>
                     {
-                        data.length > 0 ? data.map((el, key) =>
+                        dataJson.length > 0 ? dataJson.map((el, key) =>
                             <li key={key} className='flex flex-col rounded-md overflow-hidden w-[99%] mx-auto'>
-                                <CheckBar ID={el.ID} difficulty={el.difficulty} text={el.text} isDone={el.isDone}/>
+                                <CheckBar ID={el.ID} difficulty={el.difficulty} task_txt={el.task_txt} isDone={el.isDone}/>
                             </li>
                         ) : <p className='font-bold'>No data</p>}
                 </ul>

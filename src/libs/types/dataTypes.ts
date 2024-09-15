@@ -1,14 +1,15 @@
-import {noteJsonType, noteType} from "@/libs/types/noteType";
+import {noteJsonType} from "@/libs/types/noteType";
 
-export interface userType{
-    UID: number;
-    Username: string;
-    todo: noteType[],
-    finished: noteType[]
-}
+export type switchType = "completed" | "pending"
+
 export interface userJsonType {
     UID: number;
     Username: string;
     todo: noteJsonType[],
     finished: noteJsonType[]
+}
+
+export interface dataPair {
+    Pending: noteJsonType[],
+    Completed: noteJsonType[]
 }
