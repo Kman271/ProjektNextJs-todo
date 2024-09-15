@@ -12,7 +12,7 @@ export default async function CompletedPage({params} : {params : {userToken : st
     return(
         <div className='h-full w-full flex items-start justify-center'>
             <div className='basis-[80rem] max-h-[60rem] mt-52 flex-shrink'>
-                <SearchBar placeholder="find items"/>
+                <SearchBar data={dataJson} placeholder="find items"/>
                 <ul className='flex flex-col items-center w-full h-fit space-y-1 my-1
             p-1
             bg-gradient-to-br from-gray-300 to-gray-400
