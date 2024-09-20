@@ -1,10 +1,10 @@
 "use client"
-import {routeButtonProps} from '@/libs/types/buttonTypes'
+import {buttonProps} from '@/libs/types/buttonTypes'
 import {useRouter} from "next/navigation";
 import Button from "@/components/Button";
 
 
-export default function RouteButton(props: routeButtonProps) {
+export default function RouteButton(props: buttonProps) {
     const router = useRouter();
 
     return(
@@ -13,10 +13,6 @@ export default function RouteButton(props: routeButtonProps) {
                 hover:scale-110 transition-transform ease-out duration-200
                 active:scale-95
                 ${props.className}`}
-                onClick={ routeTo(props.url) }/>
+                onClick={props.onClick}/>
     )
-
-    function routeTo(Url: string) {
-        return () => router.push(Url);
-    }
 }

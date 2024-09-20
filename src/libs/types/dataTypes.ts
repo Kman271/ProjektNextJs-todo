@@ -13,3 +13,9 @@ export interface dataPair {
     Pending: noteJsonType[],
     Completed: noteJsonType[]
 }
+
+export type userType = {
+    user_id: number,
+    username: string,
+    password: string
+}

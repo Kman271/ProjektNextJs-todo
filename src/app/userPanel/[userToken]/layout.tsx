@@ -1,8 +1,17 @@
 import Link from "next/link";
+import PanelWrapper from "@/components/Panel/PanelWrapper";
+import PanelHeader from "@/components/Panel/PanelHeader";
+import React from "react";
+import {getData} from "@/libs/data/data";
+import {switchType} from "@/libs/types/dataTypes";
+import {noteJsonType} from "@/libs/types/noteType";
 
-export default function UserPanelLayout(
+export default async function UserPanelLayout(
     {children, params} : Readonly<{ children: React.ReactNode; params : {userToken: string} }>
 ) {
+    const dataPending: noteJsonType[] = await getData(params.userToken, 'pending' as switchType);
+    const dataCompletedCount: number = (await getData(params.userToken, 'completed' as switchType)).length;
+
     return(
         <div className="flex flex-row w-full h-full">
             <div className="flex-shrink-0 basis-[14rem] h-full bg-gradient-to-b from-gray-800 to-gray-900 bg-cover bg-fixed z-[3]">
@@ -37,7 +46,13 @@ export default function UserPanelLayout(
 
             <div className="w-full
             bg-gradient-to-br from-gray-900 to-black z-[2]">
-                {children}
+                <PanelWrapper>
+                    <hr className='mt-4 w-[95%] flex-shrink-0 flex-grow-0 h-px bg-gray-600 border-none rounded-full'/>
+                    <PanelHeader userToken={params.userToken}
+                                 percent={dataCompletedCount / (dataCompletedCount + dataPending.length) * 100}/>
+                    <hr className='w-[95%] flex-shrink-0 flex-grow-0 h-px bg-gray-600 border-none rounded-full'/>
+                    {children}
+                </PanelWrapper>
             </div>
         </div>
     )

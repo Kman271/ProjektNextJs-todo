@@ -1,8 +1,8 @@
 'use server'
-import {Client, Pool, PoolClient} from "pg";
+
+import {Client, Pool, PoolClient} from 'pg'
 
 type serverClient = Client | PoolClient;
-
 const isDev : boolean = process.env.NODE_ENV === "development";
 
 export async function dbConnect() {

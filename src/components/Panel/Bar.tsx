@@ -4,6 +4,8 @@ export default function Bar({percent = 0}: { percent: number }) {
 
     if (percent > 100 || percent < 0) {
         throw RangeError('Wrong percent value');
+    } else if (isNaN(percent)) {
+        percent = 0;
     }
 
     return (
@@ -15,7 +17,7 @@ export default function Bar({percent = 0}: { percent: number }) {
                     style={{
                         width: `${percent}%`
                     }}>
-                    <p className='my-auto ml-2 mr-auto font-bold z-30'>{percent}%</p>
+                    <p className='my-auto ml-3 mr-auto font-bold z-30'>{percent < 10 ? percent.toPrecision(3) : percent.toPrecision(4)}%</p>
                 </div>
             </div>
         </div>

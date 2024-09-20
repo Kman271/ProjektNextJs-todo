@@ -1,10 +1,14 @@
-"use client"
+'use server'
 import LoginButton from "@/components/LoginButton";
 import React from "react";
 import RegisterButton from "@/components/RegisterButton";
 import Image from "next/image";
+import {useSession} from "next-auth/react";
+import {AuthButtonWrapper} from "@/components/AuthButtonWrapper";
 
-export default function Home() {
+export default async function Home() {
+
+
     return (
         <>
             <main className="flex flex-col h-full items-center justify-center space-y-8 z-10">
@@ -20,18 +24,23 @@ export default function Home() {
                 <div className="mx-auto w-fit">
                     <p className="mx-auto mb-4 w-fit text-[1.25rem] font-bold drop-shadow-xl">
                         click on the buttons below to begin your journey!</p>
-                    <div className="flex flex-row justify-center space-x-2.5">
+                    <AuthButtonWrapper className="flex flex-row justify-center space-x-3">
                         <LoginButton/>
                         <RegisterButton/>
-                    </div>
+                    </AuthButtonWrapper>
                 </div>
             </main>
 
-            <div className="bg-stone-400
-          blur h-full w-full absolute -z-10
-          ">
+            <div className="left-0 right-0 top-0 bottom-0
+          blur h-full w-full absolute -z-10">
+
                 <Image className="brightness-50"
-                       src="/Home.jpg" alt='Image of notes on the table' fill={true} objectFit={'cover'}/>
+                       src="/Home.jpg"
+                       alt='Image of notes on the table'
+                       fill={true}
+                       objectFit={'cover'}
+                />
+
             </div>
         </>
     )

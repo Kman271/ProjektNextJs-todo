@@ -9,21 +9,22 @@ import RegisterForm from "@/components/RegisterForm";
 export default function RegisterWindow() {
 
     return (
-        <CardWrapper className="h-[32rem] w-[22rem] overflow-hidden">
-            <CardHeader className="flex flex-col items-center justify-center flex-grow-[2] flex-shrink-0">
-                <p className="text-[2rem] font-bold my-[1.25rem]">Register page</p>
-                <hr className="w-[90%] h-1 border-0 rounded bg-gray-600"/>
+        <CardWrapper className='h-[28rem]'>
+            <CardHeader className="flex-grow-[3] flex-shrink-0">
+                <h1 className="text-[1.5rem] leading-loose font-bold my-auto">Register page</h1>
+                <hr className="w-[90%] h-0.5 border-0 my-0 rounded bg-gray-600"/>
             </CardHeader>
 
-            <CardContent className="flex flex-col items-center flex-grow-[10] flex-shrink-0">
+            <CardContent className="flex-grow-[10]">
                 <RegisterForm/>
             </CardContent>
 
-            <CardFooter className="flex flex-col items-center flex-grow-[5] flex-shrink-0">
-                <hr className="w-[90%] h-px border-0 rounded bg-gray-600 mb-2"/>
-                <p className="w-fit mb-1 text-[1.1rem] text-gray-300">Already registered? Click <Link
-                    className="text-orange-500 font-bold border-orange-500 underline underline-offset-3"
-                    href="/auth/login">Here</Link></p>
+            <CardFooter className="flex flex-col items-center flex-grow-[2] flex-shrink-0">
+                <hr className="w-[90%] h-px border-0 rounded bg-gray-600 my-0"/>
+                <p className="w-fit my-auto text-[0.8rem] text-gray-400">Already have an account? Login <Link
+                    className="text-gray-100 font-bold border-orange-500 underline underline-offset-3"
+                    href="/auth/login">Here</Link>
+                </p>
             </CardFooter>
         </CardWrapper>
     )

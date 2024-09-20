@@ -27,7 +27,7 @@ export default function SearchBar({placeholder, data} : {placeholder: string, da
     }
 
     return(
-        <div className='flex flex-row items-center justify-end mr-4 my-3'>
+        <div className='flex flex-row items-center justify-end mr-4 mb-3 mt-4'>
             <label className='mr-2 font-bold'>Search</label>
             <input placeholder={placeholder}
             className='p-2 pl-3 rounded-md placeholder:text-gray-500 text-black'

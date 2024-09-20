@@ -1,16 +1,7 @@
 'use client'
 import {diffType, noteJsonType} from "@/libs/types/noteType";
 import SmallButton from "@/components/Panel/SmallButton";
-import {useState} from "react";
-
-function editBar() {
-    return
-}
-
-function removeBar() {
-    return
-}
-
+import React, {useState} from "react";
 
 function diffFormat(diffElement: diffType): React.ReactNode {
 
@@ -40,9 +31,9 @@ function diffFormat(diffElement: diffType): React.ReactNode {
     )
 }
 
-export default function CheckBar({difficulty, task_txt, isDone}: noteJsonType) {
+export default function CompletedNoteBar({ data, deleteHandler} : {data: noteJsonType, deleteHandler?: () => void} ) {
 
-    const [checked, setChecked] = useState(isDone);
+    const [checked, setChecked] = useState(data.isDone);
     const handleChange = () => setChecked(!checked);
 
     return (
@@ -50,22 +41,18 @@ export default function CheckBar({difficulty, task_txt, isDone}: noteJsonType) {
             className='flex flex-row items-center w-full basis-[2.75rem] flex-shrink bg-gradient-to-r from-gray-700 to-gray-800 my-0.5'>
 
             <div className='flex items-center h-full w-fit flex-grow flex-shrink'>
-                <p className='h-fit ml-4'>{task_txt}</p>
+                <p className='h-fit ml-4'>{data.task_txt}</p>
             </div>
 
             <div className='flex h-full min-w-fit justify-end items-center flex-shrink flex-grow-0 space-x-2 mr-2'>
-                <div className="w-fit h-full flex items-center justify-center">
-                    <input className='block size-[1.5rem]' type='checkbox' checked={checked} onChange={handleChange}/>
-                </div>
 
-                {diffFormat(difficulty as diffType)}
+                {diffFormat(data.difficulty as diffType)}
 
                 <div className='flex h-fit space-x-2'>
-
-                    <SmallButton className='hover:from-amber-500 hover:to-amber-600' label='edit'
-                                 onClick={editBar}/>
-                    <SmallButton className='hover:from-red-700 hover:to-red-800' label='delete'
-                                 onClick={removeBar}/>
+                    { deleteHandler != null &&
+                        <SmallButton className='hover:from-red-700 hover:to-red-800' label='delete'
+                                 onClick={deleteHandler}/>
+                    }
                 </div>
             </div>
         </div>

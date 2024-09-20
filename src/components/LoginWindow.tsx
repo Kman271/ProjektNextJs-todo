@@ -9,21 +9,22 @@ import LoginForm from "@/components/LoginForm";
 export default function LoginWindow() {
 
     return (
-        <CardWrapper className="h-[29rem] w-[22rem] overflow-hidden">
-            <CardHeader className="flex flex-col items-center justify-center flex-grow-[6] flex-shrink-0">
-                <p className="text-[2rem] font-bold my-auto">Login page</p>
-                <hr className="w-[90%] h-1 border-0 my-0 rounded bg-gray-600"/>
+        <CardWrapper className='h-[25rem]'>
+            <CardHeader className="flex-grow-[3] flex-shrink-0">
+                <h1 className="text-[1.5rem] leading-loose font-bold my-auto">Login page</h1>
+                <hr className="w-[90%] h-0.5 border-0 my-0 rounded bg-gray-600"/>
             </CardHeader>
 
-            <CardContent className="flex flex-col items-center flex-grow-[10] flex-shrink-0">
+            <CardContent className="flex-grow-[10]">
                 <LoginForm/>
             </CardContent>
 
-            <CardFooter className="flex flex-col items-center flex-grow-[4] flex-shrink-0">
+            <CardFooter className="flex flex-col items-center flex-grow-[2] flex-shrink-0">
                 <hr className="w-[90%] h-px border-0 rounded bg-gray-600 my-0"/>
-                <p className="w-fit my-auto text-[1.1rem] text-gray-300">No account? Create it <Link
-                    className="text-white font-bold border-orange-500 underline underline-offset-3"
-                    href="/auth/register">Here</Link></p>
+                <p className="w-fit my-auto text-[0.8rem] text-gray-400">No account? Create it <Link
+                    className="text-gray-100 font-bold border-orange-500 underline underline-offset-3"
+                    href="/auth/register">Here</Link>
+                </p>
             </CardFooter>
         </CardWrapper>
     )

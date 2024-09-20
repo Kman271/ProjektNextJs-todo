@@ -7,25 +7,76 @@ import {useRouter} from "next/navigation";
 export default function RegisterForm() {
 
     const router = useRouter()
-    let name = "Tomek"
+    const [username, setUsername] = React.useState("");
+    const [password, setPassword] = React.useState("");
+
+    const submitClickHandler = (e: React.FormEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if(username.length <= 0) return;
+        router.push(`/userPanel/${username}`)
+    }
 
     return (
         <form
-            className={`flex flex-col relative space-between h-fit w-72 mt-6 mx-6`}>
-            <p className="text-[0.9rem] font-bold text-gray-500 ml-2">Username</p>
-            <input
-                className="placeholder:text-gray-300 bg-gray-800 border-2 border-gray-600 mb-6 rounded-xl h-[2.5rem] text-[1.1rem] p-4 shadow-xl shadow-gray-800 focus:border-gray-300"
-                name="username" type="username" placeholder="Enter username" required/>
-            <p className="text-[0.9rem] font-bold text-gray-500 ml-2">Password</p>
-            <input
-                className="placeholder:text-gray-300 bg-gray-800 border-2 border-gray-600 mb-6 rounded-xl h-[2.5rem] text-[1.1rem] p-4 shadow-xl shadow-gray-800 focus:border-gray-300"
-                name="password" type="password" placeholder="Enter password" required/>
-            <p className="text-[0.9rem] font-bold text-gray-500 ml-2">Confirm password</p>
-            <input
-                className="placeholder:text-gray-300 bg-gray-800 border-2 border-gray-600 mb-10 rounded-xl h-[2.5rem] text-[1.1rem] p-4 shadow-xl shadow-gray-800 focus:border-gray-300"
-                name="confirmPassword" type="password" placeholder="Enter password again" required/>
-            <SubmitButton onClick={() => router.push(`/userPanel/${name}`)} label="Register" type="submit"/>
+            onSubmit={() => router.push(`/userPanel/${name}`)}
+            className='flex flex-col h-full w-[90%] mt-6'
+        >
 
+            <div className='flex-grow-[10] space-y-4'>
+
+                <div className='flex flex-col justify-center'>
+                    <p className="text-[0.9rem] font-bold text-gray-500 ml-2">
+                        Username
+                    </p>
+                    <input
+                        className="bg-gray-800 border-2 box-border border-gray-600 rounded-xl text-[0.9rem] px-3 h-[2rem] shadow-xl shadow-gray-800
+                    focus:border-gray-300 placeholder:text-gray-300 placeholder:text-[0.9rem]"
+                        name="username"
+                        type="username"
+                        placeholder="Enter username"
+                        value={username}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {setUsername(e.target.value)}}
+                        required
+                    />
+                </div>
+
+                <div className='flex flex-col justify-center'>
+                    <p className="text-[0.9rem] font-bold text-gray-500 ml-2">
+                        Password
+                    </p>
+                    <input
+                        className="bg-gray-800 border-2 box-border border-gray-600 rounded-xl text-[0.9rem] px-3 h-[2rem] shadow-xl shadow-gray-800
+                    focus:border-gray-300 placeholder:text-gray-300 placeholder:text-[0.9rem]"
+                        name="password"
+                        type="password"
+                        placeholder="Enter password"
+                        value={password}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {setPassword(e.target.value)}}
+                        required
+                    />
+                </div>
+
+                <div className='flex flex-col justify-center'>
+                    <p className="text-[0.9rem] font-bold text-gray-500 ml-2">
+                        Confirm password
+                    </p>
+                    <input
+                        className="bg-gray-800 border-2 box-border border-gray-600 rounded-xl text-[0.9rem] px-3 h-[2rem] shadow-xl shadow-gray-800
+                    focus:border-gray-300 placeholder:text-gray-300 placeholder:text-[0.9rem]"
+                        name="confirm password"
+                        type="password"
+                        placeholder="Confirm password"
+                        required
+                    />
+                </div>
+
+            </div>
+
+            <div className='flex-grow-[2]'>
+                <SubmitButton label="Register" type="submit"/>
+            </div>
         </form>
     )
 }

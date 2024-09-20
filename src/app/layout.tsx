@@ -19,7 +19,7 @@ export default function RootLayout(
 ) {
   return (
       <html lang="en" className="text-[1.2rem] h-full overflow-hidden">
-        <body className={`${poppins.className} flex flex-col h-full overflow-hidden items-center justify-center z-10
+        <body className={`${poppins.className} flex flex-col h-full overflow-hidden items-center justify-center z-10 bg-black
         `}>
           {children}
 
