@@ -2,7 +2,7 @@
 import {noteJsonType} from "@/libs/types/noteType";
 import {dbConnect, dbDisconnect} from "@/libs/data/db";
 import {switchType, userType} from "@/libs/types/dataTypes";
-import {number, string} from "zod";
+import {Prisma} from "@prisma/client";
 
 
 function getDatabaseName(isDone: boolean) {
@@ -14,44 +14,43 @@ function getIDName(isDone: boolean) {
     return isDone ? IDs.done_id : IDs.todo_id;
 }
 
-export async function getData(userToken : string, type: switchType): Promise<noteJsonType[]> {
+export const getData = async (username: string, type: switchType) => {
 
-    const tableName: string = getDatabaseName(type == 'completed')
-    let id_name: string = getIDName(type == 'completed' as switchType);
+    const client = await dbConnect();
 
-    const client = await dbConnect()
+    const id_name = getIDName(type === 'completed' as switchType);
+    const tableName = getDatabaseName(type === 'completed' as switchType);
 
-    let response;
+    let data : noteJsonType[];
     try {
-
-        console.log("Getting data...")
-        const query = `SELECT ${id_name}, task_txt, difficulty
+         const response: any = await client.$queryRawUnsafe(`
+                       SELECT ${id_name}, task_txt, difficulty
                        FROM ${tableName}
-                       INNER JOIN users on ${tableName}.user_id = (
+                       WHERE ${tableName}.user_id = (
                             SELECT user_id FROM users
-                            WHERE username = $1 LIMIT 1);`;
-        response = await client.query(query, [userToken]);
-        console.log("Successfully received data.")
+                            WHERE username = $1 LIMIT 1
+                            );`, username);
 
-    } catch (error: any) { console.error('DB Error:', error, "response:", response); throw error;
+         console.log("response is:", response);
 
-    } finally { await dbDisconnect(client);}
+         data = response.map( (el: any) => ({
+             ID: el[id_name],
+             task_txt: el["task_txt"],
+             difficulty: el["difficulty"],
+             isDone: type === "completed"
+         }))
+    } catch (err) {
+        console.error(err);
+        throw err;
+    } finally {
+        await dbDisconnect(client)
+    }
 
-    let data: noteJsonType[] = response.rows.map( row => (
-        {
-            ID: row[id_name],
-            isDone: type == 'completed',
-            difficulty: row["difficulty"],
-            task_txt: row["task_txt"]
-        }
-    ))
-
-    // console.log(data)
-
+    console.log("data:", data)
     return data;
 }
 
-export async function dbAddNote(userToken: string, noteObj: noteJsonType) {
+export async function dbAddNote(username: string, noteObj: noteJsonType) {
 
     const client = await dbConnect();
     const tableName: string = getDatabaseName(noteObj.isDone);
@@ -61,10 +60,10 @@ export async function dbAddNote(userToken: string, noteObj: noteJsonType) {
     try {
 
         console.log("Sending data...")
-        const query = `INSERT INTO ${tableName}(user_id, task_txt, difficulty)
-                            VALUES((SELECT users.user_id FROM users WHERE username = $1), 
-                            $2, $3);`;
-        response = await client.query(query, [userToken, noteObj.task_txt, noteObj.difficulty]);
+        response = await client.$queryRawUnsafe(`INSERT INTO ${tableName}(user_id, task_txt, difficulty)
+                            VALUES((SELECT users.user_id FROM users WHERE username = $1),
+                            $2, $3::taskdifficulty);`, username, noteObj.task_txt, noteObj.difficulty);
+
         console.log("Response for data sent:", response)
 
     } catch (error: any) { console.error('DB send data Error:', error, "response:", response); throw error;
@@ -73,7 +72,7 @@ export async function dbAddNote(userToken: string, noteObj: noteJsonType) {
 
 }
 
-export async function dbDeleteNote(userToken: string, noteId: number, isDone: boolean) {
+export async function dbDeleteNote(username: string, noteId: number, isDone: boolean) {
 
     const tableName: string = getDatabaseName(isDone);
     const id_name: string = getIDName(isDone);
@@ -83,9 +82,9 @@ export async function dbDeleteNote(userToken: string, noteId: number, isDone: bo
     try {
 
         console.log("Deleting data...")
-        const query = `DELETE FROM ${tableName} WHERE ${id_name}=$1 AND user_id = (SELECT user_id FROM users
-                                                      WHERE username = $2)`;
-        response = await client.query(query, [noteId, userToken]);
+        response = await client.$queryRawUnsafe(`DELETE FROM ${tableName}
+                                          WHERE ${id_name}=${noteId} AND user_id = (SELECT user_id FROM users
+                                                                                        WHERE username = $1)`, username);
         console.log("Response for data delete:", response)
 
     } catch (error: any) { console.error('DB delete data Error:', error, "response:", response); throw error;
@@ -95,24 +94,6 @@ export async function dbDeleteNote(userToken: string, noteId: number, isDone: bo
     return;
 }
 
-export async function dbAddUser(username: string, password: string) {
-
-    const client = await dbConnect();
-
-    let response;
-    try {
-        console.log("Deleting data...")
-        const query = `INSERT INTO users(username, password)
-        VALUES($1, $2)`;
-        response = await client.query(query, [username, password]);
-        console.log("Response for user add:", response)
-    } catch (error: any) { console.error('DB add user Error:', error, "response:", response); throw error;
-    } finally { await dbDisconnect(client);}
-
-    return;
-}
-
-
 export async function dbUpdateList(IDs: number[]) {
 
     const tableDoneName: string = getDatabaseName(true);
@@ -120,53 +101,45 @@ export async function dbUpdateList(IDs: number[]) {
     const idTodoName: string = getIDName(false);
     const client = await dbConnect();
 
-    const insertQuery = `
+    try {
+        console.log("Updating data...");
+
+        console.log("Begin");
+        await client.$queryRaw`BEGIN;`
+
+        console.log("Inserting data...");
+        await client.$queryRawUnsafe(`
         WITH movingRows AS (
             SELECT ${tableTodoName}.user_id, task_txt, difficulty FROM ${tableTodoName}
             INNER JOIN users ON users.user_id = ${tableTodoName}.user_id
             WHERE ${idTodoName} = ANY($1)
         )
         INSERT INTO ${tableDoneName} (user_id, task_txt, difficulty)
-        SELECT user_id, task_txt, difficulty FROM movingRows;
-    `;
-
-    const deleteQuery = `
-        DELETE FROM ${tableTodoName}
-            WHERE ${idTodoName} = ANY($1);
-    `;
-
-    try {
-        console.log("Updating data...");
-
-        console.log("Begin");
-        await client.query("BEGIN;")
-
-        console.log("Inserting data...");
-        await client.query(insertQuery, [IDs]);
+        SELECT user_id, task_txt, difficulty FROM movingRows;`, IDs);
 
         console.log("Deleting data...");
-        await client.query(deleteQuery, [IDs]);
+        await client.$queryRawUnsafe(`DELETE FROM ${tableTodoName}
+                               WHERE ${idTodoName} = ANY($1);`, IDs);
 
         console.log("Commit");
-        await client.query("COMMIT;")
+        await client.$queryRaw`COMMIT;`
 
         console.log("Data updated successfully.");
     } catch (error: any) {
         console.error('DB update data Error:', error);
-        await client.query("ROLLBACK");
+        await client.$queryRaw`ROLLBACK`;
         throw error;
     } finally { await dbDisconnect(client);}
 }
 
 export async function dbGetUsers() {
     const client = await dbConnect();
-    const query = `SELECT * FROM users`;
-    let response;
+    let response: any;
     let users: userType[];
 
     try {
         console.log("Getting users...");
-        response = await client.query(query);
+        response = await client.$queryRaw`SELECT * FROM users`;
         console.log("Got users list");
     } catch (error) {
         console.error("User data get Error:", error)
@@ -175,11 +148,48 @@ export async function dbGetUsers() {
         await dbDisconnect(client)
     }
 
-    users = response.rows.map(row => ({
-        user_id: row['user_id'],
-        username: row['username'],
-        password: row['password']
+    users = response.map((row: any) => ({
+        user_id: row.user_id,
+        username: row.username,
+        password: row.password
     }))
 
+    console.log("Users data:", users)
+
     return users;
+}
+
+export async function dbAddUser(username: string, password: string) {
+    const client = await dbConnect();
+    let response: any;
+
+    try {
+        console.log("Getting users...");
+        await client.$queryRaw`BEGIN;`;
+        response = await client.$queryRawUnsafe(`INSERT INTO users(username, password)
+        VALUES($1,$2);`, username, password);
+        console.log("Got response:", response);
+        await client.$queryRaw`COMMIT;`
+        console.log("Commit");
+    } catch (error) {
+        await client.$queryRaw`ROLLBACK;`;
+        let errString: string = "Unknown error"
+        console.error("User Register Error:", error)
+
+        if(error instanceof Prisma.PrismaClientKnownRequestError) {
+            switch (error.code) {
+                case 'P2010':
+                    errString = "User already exists";
+                    break;
+                default:
+                    break;
+            }
+        }
+        throw new Error(errString);
+
+    } finally {
+        await dbDisconnect(client)
+    }
+
+    console.log("Added user:", {username, password});
 }

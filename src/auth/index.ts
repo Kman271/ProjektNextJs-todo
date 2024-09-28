@@ -1,31 +1,72 @@
-import NextAuth, {User, NextAuthConfig} from "next-auth";
+import NextAuth, {User} from "next-auth";
 import Credentials from "@auth/core/providers/credentials";
 import {dbGetUsers} from "@/libs/data/data";
 import {userType} from "@/libs/types/dataTypes";
 
-export const BASE_PATH = "/api/auth";
+export const BASE_PATH = '/api/auth';
 
-const authOptions: NextAuthConfig = {
+export const authOptions =  {
+    debug: process.env.NODE_ENV === 'development',
     providers: [
         Credentials({
-            name: "Credentials",
             credentials: {
-                username: {label: "Username", type: "text", placeholder: "Tomek"},
-                password: {label: "Password", type: "password"},
+                username: {label: 'username', type: "text"},
+                password: {label: 'password', type: 'password'},
             },
-            async authorize(credentials): Promise<User | null> {
-                const users: userType[] = await dbGetUsers();
-                const user: userType | undefined = users.find( (u: userType) =>
-                    u.username === credentials.username &&
-                    u.password === credentials.password
-                );
-                return user ? {id: user.user_id.toString(), name: user.username} : null;
+
+            authorize: async (credentials) => {
+                try {
+                    const {username, password} = credentials;
+
+                    const users: userType[] = await dbGetUsers();
+                    console.log("NextAuth Users:", users);
+                    console.log("NextAuth credentials got:", credentials);
+
+                    const user = users.find((u: userType) =>
+                        u.username.toString() == username?.toString() &&
+                        u.password.toString() == password?.toString()
+                    );
+
+                    if(!user) {
+                        // throw new Error("Credentials error")
+                        return {error: "Invalid username or password"};
+                    }
+
+
+                    console.log("NextAuth user confirmed:", user);
+                    return {
+                        name: user.username,
+                        id: user.user_id.toString(),
+                    }
+
+                } catch (error: any) {
+                    console.error("Authorize error:", error.message);
+                    return {error: 'OTHER ERROR DURING AUTH:' + error.message || "Login failed"};
+                }
             }
 
         })
     ],
+
+    callbacks: {
+        async signIn({ user } : {user:any}) {
+            console.log("SignIn callback - user is:", user)
+            if (user && user.error) {
+                const errorString = encodeURIComponent(user.error);
+                console.log("with encoded url:", errorString)
+                return `/auth/login?error=${errorString}`;
+            }
+            return true;
+        },
+    },
+
+    pages: {
+        signIn: '/auth/login',
+        signOut: '/',
+        error: '/auth/login'
+    },
     basePath: BASE_PATH,
     secret: process.env.NEXTAUTH_SECRET,
 };
 
-export const {handlers, auth, signIn, signOut} = NextAuth(authOptions)
+export const {handlers, signIn, signOut, auth} = NextAuth(authOptions)

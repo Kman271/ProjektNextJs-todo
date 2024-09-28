@@ -2,7 +2,7 @@ import {z} from 'zod';
 
 const symbol = 'Must contain a big letter, number and a special character'
 
-export const SingUpSchema = z.object({
+export const SignUpSchema = z.object({
     name: z
         .string()
         .min(5, {message: 'Name must be at least 5 characters long'})
@@ -13,7 +13,7 @@ export const SingUpSchema = z.object({
         .regex(/[A-Z]/, {message: symbol})
         .regex(/[0-9]/, {message: symbol})
         .regex(/[^a-zA-Z0-9]/, {message: symbol})
-        .trim()
+        .trim(),
 })
 
 export type FormState = | {

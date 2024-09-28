@@ -1,24 +1,62 @@
 'use client'
-import React from "react";
+import React, {useEffect, useState} from "react";
 import SubmitButton from "@/components/SubmitButton";
-import {useRouter} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
+import {signIn} from "@/libs/auth/helpers";
+import {useSession} from "next-auth/react";
 
 export default function LoginForm() {
 
+    const searchParams = useSearchParams();
     const router = useRouter()
-    const [username, setUsername] = React.useState("");
-    const [password, setPassword] = React.useState("");
+    const {data: session, status} = useSession();
 
-    const submitClickHandler = (e: React.FormEvent) => {
+    useEffect(() => {
+        if(status === 'authenticated') {
+            console.log("Client session redirect to user:", session?.user?.name)
+            router.push(`/userPanel/${session?.user?.name}`);
+        }
+    }, [session?.user?.name, status, router]);
+
+    if(status === 'loading') return <div>Loading...</div>;
+
+    useEffect(() => {
+        const errorParam = searchParams?.get('error');
+        if (errorParam) {
+            setError(decodeURIComponent(errorParam));  // Decode the error param in case it is URL-encoded
+        } else {
+            setError(null);  // Clear error if no error param is present
+        }
+    }, [searchParams]);
+
+
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = React.useState<string|null>(null);
+
+
+
+    const submitClickHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        e.stopPropagation();
 
-        if(username.length <= 0) return;
-        //checkUsername(username);
-        //checkPassword(password);
+        const form = new FormData();
+        form.append("username", username);
+        form.append("password", password);
 
+        try {
 
-        router.push(`/userPanel/${username}`)
+            console.log("begin to sign in with formData:", form);
+            const response = await signIn(username, form);
+
+            console.log("Sign in finished with response:", response);
+            router.push(response);
+
+        } catch (error: any) {
+
+            setError(error.message || "Unexpected error");
+            console.error("SignIn Error:", error);
+            return;
+        }
     }
 
 
@@ -27,7 +65,6 @@ export default function LoginForm() {
             onSubmit={submitClickHandler}
             className='flex flex-col h-full w-[90%] mt-6'
         >
-
             <div className='flex-grow-[10] space-y-4'>
 
                 <div className='flex flex-col justify-center'>
@@ -38,10 +75,12 @@ export default function LoginForm() {
                         className="bg-gray-800 border-2 box-border border-gray-600 rounded-xl text-[0.9rem] px-3 h-[2rem] shadow-xl shadow-gray-800
                     focus:border-gray-300 placeholder:text-gray-300 placeholder:text-[0.9rem]"
                         name="username"
-                        type="username"
+                        type="text"
                         placeholder="Enter username"
                         value={username}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {setUsername(e.target.value)}}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            setUsername(e.target.value)
+                        }}
                         required
                     />
                 </div>
@@ -57,12 +96,16 @@ export default function LoginForm() {
                         type="password"
                         placeholder="Enter password"
                         value={password}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {setPassword(e.target.value)}}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            setPassword(e.target.value)
+                        }}
                         required
                     />
                 </div>
 
             </div>
+
+            {error && <p className='text-red-600'>{error}</p>}
 
             <div className='flex-grow-[2]'>
                 <SubmitButton label="Log in" type="submit"/>

@@ -1,8 +1,11 @@
 import RegisterWindow from "@/components/RegisterWindow";
+import {AuthButtonWrapper} from "@/components/AuthButtonWrapper";
 
 
 export default function RegisterPage() {
     return(
-        <RegisterWindow />
+        <AuthButtonWrapper>
+            <RegisterWindow/>
+        </AuthButtonWrapper>
     )
 }

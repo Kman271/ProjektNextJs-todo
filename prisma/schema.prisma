@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL_NON_POOLING")
+}
+
+model dones {
+  done_id    Int            @id @default(autoincrement())
+  user_id    Int?
+  task_txt   String         @db.VarChar(50)
+  difficulty taskdifficulty
+  users      users?         @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_user")
+}
+
+model todos {
+  todo_id    Int            @id @default(autoincrement())
+  user_id    Int?
+  task_txt   String         @db.VarChar(50)
+  difficulty taskdifficulty
+  users      users?         @relation(fields: [user_id], references: [user_id], onUpdate: NoAction, map: "fk_user")
+}
+
+model users {
+  user_id  Int     @id @default(autoincrement())
+  username String  @unique @db.VarChar(50)
+  password String  @db.VarChar(50)
+  dones    dones[]
+  todos    todos[]
+}
+
+enum taskdifficulty {
+  easy
+  medium
+  hard
+}

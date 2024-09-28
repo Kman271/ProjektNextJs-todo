@@ -5,6 +5,8 @@ import React from "react";
 import {getData} from "@/libs/data/data";
 import {switchType} from "@/libs/types/dataTypes";
 import {noteJsonType} from "@/libs/types/noteType";
+import {signOut} from "@/libs/auth/helpers";
+import SignOutButton from "@/components/Panel/SignOutButton";
 
 export default async function UserPanelLayout(
     {children, params} : Readonly<{ children: React.ReactNode; params : {userToken: string} }>
@@ -37,6 +39,9 @@ export default async function UserPanelLayout(
                                   hover:bg-gradient-to-br hover:from-blue-600 hover:to-blue-700'>
                                 <span className="ml-4">Completed</span>
                             </Link>
+                        </li>
+                        <li className='basis-[3rem]'>
+                            <SignOutButton/>
                         </li>
                     </ul>
                 </nav>

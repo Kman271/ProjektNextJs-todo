@@ -3,6 +3,7 @@ export interface buttonProps {
     onClick?: (e?: any) => void;
     label: string;
     className?: string;
+    type?: "button" | "submit" | "reset";
 }
 
 export interface submitButtonProps extends buttonProps {

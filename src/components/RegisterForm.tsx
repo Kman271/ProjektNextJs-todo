@@ -1,26 +1,73 @@
 'use client'
-import React from "react";
+import React, {useEffect, useState} from "react";
 import SubmitButton from "@/components/SubmitButton";
-import {router} from "next/client";
 import {useRouter} from "next/navigation";
+import {useSession} from "next-auth/react";
+import {SignUpSchema} from "@/libs/auth/definitions";
+import {dbAddUser} from "@/libs/data/data";
+import {z} from "zod"
+import {signIn} from "@/libs/auth/helpers";
 
 export default function RegisterForm() {
 
     const router = useRouter()
-    const [username, setUsername] = React.useState("");
-    const [password, setPassword] = React.useState("");
+    const {data: session, status} = useSession();
 
-    const submitClickHandler = (e: React.FormEvent) => {
+    useEffect(() => {
+        if(status === 'authenticated') {
+            console.log("Client session redirect to user:", session?.user?.name)
+            router.push(`/userPanel/${session?.user?.name}`);
+        }
+    }, [session?.user?.name, status, router]);
+
+    if(status === 'loading') return <div>Loading...</div>;
+
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [confPassword, setconfPassword] = useState("");
+    const [error, setError] = React.useState<string|null>(null);
+
+    const submitClickHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        e.stopPropagation();
 
-        if(username.length <= 0) return;
-        router.push(`/userPanel/${username}`)
+        try {
+            SignUpSchema.parse({name: username, password: password});
+            if(password !== confPassword) throw new Error("Passwords don't match");
+
+            console.log("begin to register Data:", {username, password});
+            await dbAddUser(username, password);
+            console.log("User add finished");
+
+        } catch (error: any) {
+
+            if(error instanceof z.ZodError) {
+                setError(error.errors[0].message);
+                console.error("Data validation in register Error:", error.errors[0].message);
+                return;
+            }
+
+            setError(error.message);
+            console.error("Register Error:", error.message);
+            return;
+        }
+
+        const formData = new FormData()
+        formData.append("username", username);
+        formData.append("password", password);
+        const responseSign = await signIn(username, formData);
+        const userUrl = responseSign?.url;
+        if(responseSign?.ok) {
+            console.log("Redirecting to:", userUrl)
+            router.push(userUrl);
+        } else {
+            setError("Login after register failed.");
+            console.error("Register signIn Error");
+        }
     }
 
     return (
         <form
-            onSubmit={() => router.push(`/userPanel/${name}`)}
+            onSubmit={submitClickHandler}
             className='flex flex-col h-full w-[90%] mt-6'
         >
 
@@ -65,14 +112,18 @@ export default function RegisterForm() {
                     <input
                         className="bg-gray-800 border-2 box-border border-gray-600 rounded-xl text-[0.9rem] px-3 h-[2rem] shadow-xl shadow-gray-800
                     focus:border-gray-300 placeholder:text-gray-300 placeholder:text-[0.9rem]"
-                        name="confirm password"
+                        name="confPassword"
                         type="password"
                         placeholder="Confirm password"
+                        value={confPassword}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {setconfPassword(e.target.value)}}
                         required
                     />
                 </div>
 
             </div>
+
+            { (error) && <p className='text-red-600'>{error?.toString()}</p>}
 
             <div className='flex-grow-[2]'>
                 <SubmitButton label="Register" type="submit"/>
