@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL_NON_POOLING")
+  provider = "postgres"
+  url      = env("POSTGRES_URL")
 }
 
 model dones {
