@@ -6,6 +6,6 @@ import React from "react";
 export function LogOutBtn() {
 
     return(
-        <button onClick={signOut}>Sign out</button>
+        <button onClick={(e) => {e.preventDefault(); signOut()} }>Sign out</button>
     )
 }
