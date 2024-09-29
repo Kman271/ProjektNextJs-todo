@@ -1,7 +1,7 @@
 'use client'
 import React, {useEffect, useState} from "react";
 import SubmitButton from "@/components/SubmitButton";
-import {useRouter} from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 import {useSession} from "next-auth/react";
 import {SignUpSchema} from "@/libs/auth/definitions";
 import {dbAddUser} from "@/libs/data/data";
@@ -14,32 +14,52 @@ export default function RegisterForm() {
     const {data: session, status} = useSession();
 
     useEffect(() => {
-        if(status === 'authenticated') {
+        if (status === 'authenticated') {
             console.log("Client session redirect to user:", session?.user?.name)
             router.push(`/userPanel/${session?.user?.name}`);
         }
     }, [session?.user?.name, status, router]);
 
-
+    const pathname = usePathname();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confPassword, setconfPassword] = useState("");
-    const [error, setError] = React.useState<string|null>(null);
+    const [error, setError] = React.useState<string | null>(null);
 
     const submitClickHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         try {
             SignUpSchema.parse({name: username, password: password});
-            if(password !== confPassword) throw new Error("Passwords don't match");
+            if (password !== confPassword) throw new Error("Passwords don't match");
 
             console.log("begin to register Data:", {username, password});
-            await dbAddUser(username, password);
-            console.log("User add finished");
+            dbAddUser(username, password).then((res) => {
+                    console.log("User add finished");
 
+                    const formData = new FormData()
+                    formData.append("username", username);
+                    formData.append("password", password);
+                    signIn(username, formData, pathname).then((responseSign) => {
+
+                        const stringEnd =  responseSign.url.substring(responseSign.url.lastIndexOf('/', responseSign.url.lastIndexOf('/')-1))
+                        console.log("Response of sign in after register:", responseSign)
+
+                        if (stringEnd === `/userPanel/${username}`) {
+                            console.log("Redirecting to:", responseSign)
+                            router.push(responseSign.url);
+                            return;
+                        }
+
+                        setError("Login after register failed.");
+                        console.error("Register signIn Error");
+                        return;
+                    })
+                }
+            )
         } catch (error: any) {
 
-            if(error instanceof z.ZodError) {
+            if (error instanceof z.ZodError) {
                 setError(error.errors[0].message);
                 console.error("Data validation in register Error:", error.errors[0].message);
                 return;
@@ -48,19 +68,6 @@ export default function RegisterForm() {
             setError(error.message);
             console.error("Register Error:", error.message);
             return;
-        }
-
-        const formData = new FormData()
-        formData.append("username", username);
-        formData.append("password", password);
-        const responseSign = await signIn(username, formData);
-        const userUrl = responseSign?.url;
-        if(responseSign?.ok) {
-            console.log("Redirecting to:", userUrl)
-            router.push(userUrl);
-        } else {
-            setError("Login after register failed.");
-            console.error("Register signIn Error");
         }
     }
 

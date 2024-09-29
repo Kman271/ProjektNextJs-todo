@@ -1,6 +1,8 @@
 import {NextResponse} from "next/server";
 import {auth} from "@/auth";
 import {getToken, GetTokenParams} from "@auth/core/jwt";
+import {unknown} from "zod";
+import {signOut} from "@/libs/auth/helpers";
 
 
 export const config = {

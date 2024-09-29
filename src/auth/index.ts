@@ -6,7 +6,7 @@ import {userType} from "@/libs/types/dataTypes";
 export const BASE_PATH = '/api/auth';
 
 export const authOptions =  {
-    debug: process.env.NODE_ENV === 'development',
+    // debug: process.env.NODE_ENV === 'development',
     providers: [
         Credentials({
             credentials: {
@@ -19,8 +19,8 @@ export const authOptions =  {
                     const {username, password} = credentials;
 
                     const users: userType[] = await dbGetUsers();
-                    console.log("NextAuth Users:", users);
-                    console.log("NextAuth credentials got:", credentials);
+                    // console.log("NextAuth Users:", users);
+                    // console.log("NextAuth credentials got:", credentials);
 
                     const user = users.find((u: userType) =>
                         u.username.toString() == username?.toString() &&
@@ -51,11 +51,15 @@ export const authOptions =  {
     callbacks: {
         async signIn({ user } : {user:any}) {
             console.log("SignIn callback - user is:", user)
-            if (user && user.error) {
+
+            if (user.error) {
                 const errorString = encodeURIComponent(user.error);
                 console.log("with encoded url:", errorString)
-                return `/auth/login?error=${errorString}`;
+                return `/auth/login?error=${errorString}`
             }
+
+            if(!user) throw new Error("User is undefined in signIn callback");
+
             return true;
         },
     },

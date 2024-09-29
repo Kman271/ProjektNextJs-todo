@@ -1,12 +1,13 @@
 'use client'
 import React, {useEffect, useState} from "react";
 import SubmitButton from "@/components/SubmitButton";
-import {useRouter, useSearchParams} from "next/navigation";
+import {usePathname, useRouter, useSearchParams} from "next/navigation";
 import {signIn} from "@/libs/auth/helpers";
 import {useSession} from "next-auth/react";
 
 export default function LoginForm() {
 
+    const pathname = usePathname();
     const searchParams = useSearchParams();
     const router = useRouter()
     const {data: session, status} = useSession();
@@ -44,10 +45,12 @@ export default function LoginForm() {
         try {
 
             console.log("begin to sign in with formData:", form);
-            const response = await signIn(username, form);
+            const response = await signIn(username, form, pathname);
+
+            if(!response.ok) throw new Error();
 
             console.log("Sign in finished with response:", response);
-            router.push(response);
+            router.push(response.url);
 
         } catch (error: any) {
 

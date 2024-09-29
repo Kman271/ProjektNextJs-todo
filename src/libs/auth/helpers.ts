@@ -1,8 +1,7 @@
 'use server'
 import {signIn as nextAuthSignIn, signOut as nextAuthSignOut} from '@/auth/index';
-import {AuthError} from "next-auth";
 
-export async function signIn(username: string, formData: FormData) {
+export async function signIn(username: string, formData: FormData, pathname: string) {
 
     try {
         const callbackUrl = `/userPanel/${username}`;
@@ -10,33 +9,23 @@ export async function signIn(username: string, formData: FormData) {
         formData.forEach((v, k) => (credentials[k] = v));
 
         console.log("FormData data is:", {...credentials, redirectTo: callbackUrl, redirect: false})
-        const result = await nextAuthSignIn('credentials', {
+        // console.log("Credientials:", credentials);
+
+        const result: string = await nextAuthSignIn('credentials', {
             redirect: false,
             redirectTo: callbackUrl,
             ...credentials
         });
+        const stringEnd =  result.substring(result.lastIndexOf('/', result.lastIndexOf('/')-1))
+        console.log("SignIn result:", result, "callback:", callbackUrl, "result splited:", stringEnd, "are equal?", callbackUrl === stringEnd);
 
-        console.log("Credientials:", credentials);
-        console.log("Data sent to auth:", {redirect: false, redirectTo: callbackUrl, ...credentials})
-        console.log("SignIn result:", result);
-
-        console.log('result url:', result.url, "error:", result.error)
-
-        if (result !== true) {
+        if( callbackUrl !== stringEnd ) {
             console.error("SignIn failed");
-            return result;
+            return {ok: false, url: result};
         }
 
-        if (result.url) {
-            const redirectTo = result.url || callbackUrl;
-            console.log("result.url:", result.url, "callbackUrl:", callbackUrl);
-            return redirectTo;
-        }
-
-        // if (!result.ok) {
-        //     console.log("SignIn is not OK:");
-        //     throw new Error("SignIn did not return OK");
-        // }
+            console.log("SignIn succeeded")
+            return {ok: true, url: result};
 
     } catch (error: any) {
         throw new Error(error.message || "Unknown result during singIn");
