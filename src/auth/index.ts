@@ -2,11 +2,16 @@ import NextAuth, {User} from "next-auth";
 import Credentials from "@auth/core/providers/credentials";
 import {dbGetUsers} from "@/libs/data/data";
 import {userType} from "@/libs/types/dataTypes";
+import {JWT} from "@auth/core/jwt";
+import {Session} from "next-auth";
 
 export const BASE_PATH = '/api/auth';
 
 export const authOptions =  {
     // debug: process.env.NODE_ENV === 'development',
+    session: {
+      strategy: 'jwt'
+    },
     providers: [
         Credentials({
             credentials: {
@@ -62,6 +67,24 @@ export const authOptions =  {
 
             return true;
         },
+        callbacks: {
+            async jwt({ token, user } : {token: JWT, user?: User|null}) {
+                if (user) {
+                    token.id = user.id; // Assign user details to the token
+                }
+                return token;
+            },
+            async session({ session, token } : {session: Session, token: JWT}) {
+                if(token.id) {
+                    if(!session.user) throw new Error("JWT TOKEN: Session.user does not exist");
+                    else {
+                        session.user.id = token.id; // Attach the token data to the session
+                    }
+                }
+                return session;
+            },
+        }
+
     },
 
     pages: {
