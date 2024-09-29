@@ -1,8 +1,6 @@
 import {NextResponse} from "next/server";
 import {auth} from "@/auth";
 import {getToken, GetTokenParams} from "@auth/core/jwt";
-import {unknown} from "zod";
-import {signOut} from "@/libs/auth/helpers";
 
 
 export const config = {
@@ -27,13 +25,13 @@ export default auth(async (req) => {
         const username = token?.name || "unknown";
 
         console.log("Middleware for user:", username, "on route:", pathname);
-        if (token && ["/auth/login", "/auth/register"].includes(pathname)) {
-            const url = `/userPanel/${username}`
-            console.log("Middleware redirects to correct panel:", url, "request:", req.url)
-            return NextResponse.redirect(
-                new URL(url, req.url)
-            )
-        }
+        // if (token && ["/auth/login", "/auth/register"].includes(pathname)) {
+        //     const url = `/userPanel/${username}`
+        //     console.log("Middleware redirects to correct panel:", url, "request:", req.url)
+        //     return NextResponse.redirect(
+        //         new URL(url, req.url)
+        //     )
+        // }
 
         if(!token && ["/auth/login", "/auth/register"].includes(pathname) ) {
             console.log("Middleware ignores")

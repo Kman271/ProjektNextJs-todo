@@ -5,6 +5,8 @@ import RegisterButton from "@/components/RegisterButton";
 import Image from "next/image";
 import {useSession} from "next-auth/react";
 import {AuthButtonWrapper} from "@/components/AuthButtonWrapper";
+import {signOut} from "@/libs/auth/helpers";
+import {LogOutBtn} from "@/components/LogOutBtn";
 
 export default async function Home() {
 

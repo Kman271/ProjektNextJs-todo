@@ -6,7 +6,7 @@ import {useSession} from "next-auth/react";
 import {SignUpSchema} from "@/libs/auth/definitions";
 import {dbAddUser} from "@/libs/data/data";
 import {z} from "zod"
-import {signIn} from "@/libs/auth/helpers";
+import {signIn, signOut} from "@/libs/auth/helpers";
 
 export default function RegisterForm() {
 
@@ -15,8 +15,8 @@ export default function RegisterForm() {
 
     useEffect(() => {
         if (status === 'authenticated') {
-            console.log("Client session redirect to user:", session?.user?.name)
-            router.push(`/userPanel/${session?.user?.name}`);
+            console.log("Client session logging out")
+            signOut('/auth/register').then();
         }
     }, [session?.user?.name, status, router]);
 

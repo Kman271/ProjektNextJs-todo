@@ -33,8 +33,15 @@ export async function signIn(username: string, formData: FormData, pathname: str
 
 }
 
-export async function signOut() {
+export async function signOut(newUrl?: string) {
+
+    if (newUrl) {
+        await nextAuthSignOut({
+            redirectTo: newUrl,
+        })
+    }
     await nextAuthSignOut({
+        redirect: true,
         redirectTo: '/'
     });
 }
