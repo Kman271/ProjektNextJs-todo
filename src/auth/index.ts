@@ -11,6 +11,7 @@ export const authOptions: NextAuthConfig =  {
     // debug: process.env.NODE_ENV === 'development',
     session: {
       strategy: 'jwt'
+
     },
     providers: [
         Credentials({
