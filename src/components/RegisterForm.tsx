@@ -20,7 +20,6 @@ export default function RegisterForm() {
         }
     }, [session?.user?.name, status, router]);
 
-    if(status === 'loading') return <div>Loading...</div>;
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -65,6 +64,7 @@ export default function RegisterForm() {
         }
     }
 
+    if(status === 'loading') return <div>Loading...</div>;
     return (
         <form
             onSubmit={submitClickHandler}

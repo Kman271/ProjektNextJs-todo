@@ -15,7 +15,7 @@ export default function CompletedNotesList({userToken, data}: { userToken: strin
     const deleteHandler = useCallback( (ID: number, isDone: boolean) => {
         dbDeleteNote(userToken, ID, isDone).then(p => (p))
         router.refresh();
-    }, [userToken])
+    }, [router, userToken])
 
     let search: string = searchParams.get('search') || "";
     let page: number = parseInt(searchParams.get('page') as string || '1'); //1 for first page
@@ -43,7 +43,7 @@ export default function CompletedNotesList({userToken, data}: { userToken: strin
         (newCurrentPage: number) => {
             router.push(pathname + '?' + setSearchParams('page', newCurrentPage))
         }
-        , [setSearchParams]
+        , [router, pathname, setSearchParams]
     )
 
     const generatedData = genData(data);

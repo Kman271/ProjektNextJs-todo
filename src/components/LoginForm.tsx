@@ -18,8 +18,6 @@ export default function LoginForm() {
         }
     }, [session?.user?.name, status, router]);
 
-    if(status === 'loading') return <div>Loading...</div>;
-
     useEffect(() => {
         const errorParam = searchParams?.get('error');
         if (errorParam) {
@@ -60,6 +58,7 @@ export default function LoginForm() {
     }
 
 
+    if(status === 'loading') return <div>Loading...</div>;
     return (
         <form
             onSubmit={submitClickHandler}

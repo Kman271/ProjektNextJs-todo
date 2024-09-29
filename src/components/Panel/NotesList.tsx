@@ -21,7 +21,7 @@ export default function NotesList({userToken, data}: { userToken: string, data: 
     const deleteHandler = useCallback( (ID: number, isDone: boolean) => {
         dbDeleteNote(userToken, ID, isDone).then(p => (p))
         router.refresh();
-    }, [userToken])
+    }, [userToken, router])
 
     const pageLimit = 5;
     const genData = (data: noteJsonType[]) => {
@@ -50,7 +50,7 @@ export default function NotesList({userToken, data}: { userToken: string, data: 
         (newCurrentPage: number) => {
             router.push(pathname + '?' + setSearchParams('page', newCurrentPage))
         }
-        , [setSearchParams]
+        , [router, pathname, setSearchParams]
     )
 
     const generatedData = genData(data);
@@ -62,7 +62,7 @@ export default function NotesList({userToken, data}: { userToken: string, data: 
             dbUpdateList(genIDs).then(p => p);
             router.refresh();
         }
-     , [genIDs] )
+     , [genIDs, router] )
 
     return (
         <div>
