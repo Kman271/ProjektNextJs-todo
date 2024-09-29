@@ -6,11 +6,12 @@ import {JWT} from "@auth/core/jwt";
 import {Session} from "next-auth";
 
 export const BASE_PATH = '/api/auth';
+const isProduction = process.env.NODE_ENV === "production";
 
 export const authOptions: NextAuthConfig =  {
     // debug: process.env.NODE_ENV === 'development',
     session: {
-      strategy: 'jwt'
+      strategy: 'jwt',
 
     },
     providers: [

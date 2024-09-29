@@ -21,7 +21,11 @@ export default auth(async (req) => {
             throw new Error("NEXTAUTH_SECRET is undefined, needed in middleware!");
         }
 
-        const tokenParams: GetTokenParams<false> = {req, secret: process.env.NEXTAUTH_SECRET};
+        const tokenParams: GetTokenParams<false> = {
+            req: req,
+            secret: process.env.NEXTAUTH_SECRET,
+            cookieName: "next-auth.session-token",
+        };
 
         console.log("Attempting to retrieve token with params:", tokenParams);
         const token = await getToken(tokenParams);
