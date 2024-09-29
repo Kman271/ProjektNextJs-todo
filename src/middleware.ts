@@ -24,7 +24,8 @@ export default auth(async (req) => {
         const token = await getToken(tokenParams);
         const username = token?.name || "unknown";
 
-        console.log("Middleware for user:", username, "on route:", pathname);
+        console.log("Middleware for token:", token, "for tokenParams:", tokenParams, "Pathname:", pathname)
+        console.log("Middleware for user:", username);
         // if (token && ["/auth/login", "/auth/register"].includes(pathname)) {
         //     const url = `/userPanel/${username}`
         //     console.log("Middleware redirects to correct panel:", url, "request:", req.url)
