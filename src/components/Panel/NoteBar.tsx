@@ -1,8 +1,9 @@
 'use client'
+
 import {diffType, noteJsonType} from "@/libs/types/noteType";
 import SmallButton from "@/components/Panel/SmallButton";
 import React from "react";
-import diffFormat from "@/libs/utils/diffFormat";
+import diffFormat from "@/components/utils/diffFormat";
 
 
 export default function NoteBar({ data, deleteHandler, isChecked, setIsChecked} : {data: noteJsonType, deleteHandler?: () => void, isChecked: boolean, setIsChecked: any} ) {
@@ -33,10 +34,11 @@ export default function NoteBar({ data, deleteHandler, isChecked, setIsChecked} 
                 <div className='flex h-fit space-x-2'>
                     <SmallButton className='hover:from-red-700 hover:to-red-800'
                                  label='delete'
-                                 onClick={deleteHandler != undefined && deleteHandler}
+                                 onClick={deleteHandler != undefined ? deleteHandler : undefined}
                     />
                 </div>
             </div>
         </div>
+
     )
 }

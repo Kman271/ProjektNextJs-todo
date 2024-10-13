@@ -9,6 +9,7 @@ import LoginForm from "@/components/LoginForm";
 export default function LoginWindow() {
 
     return (
+
         <CardWrapper className='h-[25rem]'>
             <CardHeader className="flex-grow-[3] flex-shrink-0">
                 <h1 className="text-[1.5rem] leading-loose font-bold my-auto">Login page</h1>
@@ -27,5 +28,6 @@ export default function LoginWindow() {
                 </p>
             </CardFooter>
         </CardWrapper>
+
     )
 }

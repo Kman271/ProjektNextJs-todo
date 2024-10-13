@@ -11,27 +11,33 @@ export default function SearchBar({placeholder, data} : {placeholder: string, da
     const pathname = usePathname();
     const router = useRouter();
 
-    const createQueryString = useCallback(
-    function setSearchParams(name: string, value: string) {
+    const createQueryString = useCallback( (name: string, value: string) => {
+
         let newSearchParams = new URLSearchParams(searchParams.toString());
         newSearchParams.set(name, value);
 
         return newSearchParams.toString()
-    },
-        [searchParams]
+        }, [searchParams]
     )
 
     async function searchHandler(e: React.ChangeEvent<HTMLInputElement>) {
+
         e.stopPropagation();
         router.push(pathname + '?' + createQueryString('search', e.target.value))
+
     }
 
     return(
+
         <div className='flex flex-row items-center justify-end mr-4 mb-3 mt-4'>
             <label className='mr-2 font-bold'>Search</label>
             <input placeholder={placeholder}
             className='p-2 pl-3 rounded-md placeholder:text-gray-500 text-black'
-            onChange={useDebouncedCallback((e) => (searchHandler(e)), 300)}/>
+            onChange={useDebouncedCallback( (e) => (
+                searchHandler(e)), 300
+            )}
+            />
         </div>
+
     )
 }

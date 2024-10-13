@@ -9,6 +9,7 @@ import RegisterForm from "@/components/RegisterForm";
 export default function RegisterWindow() {
 
     return (
+
         <CardWrapper className='h-[28rem]'>
             <CardHeader className="flex-grow-[3] flex-shrink-0">
                 <h1 className="text-[1.5rem] leading-loose font-bold my-auto">Register page</h1>
@@ -27,5 +28,6 @@ export default function RegisterWindow() {
                 </p>
             </CardFooter>
         </CardWrapper>
+
     )
 }

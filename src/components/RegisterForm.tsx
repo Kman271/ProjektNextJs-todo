@@ -23,30 +23,32 @@ export default function RegisterForm() {
     const pathname = usePathname();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [confPassword, setconfPassword] = useState("");
+    const [confPassword, setConfPassword] = useState("");
     const [error, setError] = React.useState<string | null>(null);
 
     const submitClickHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         try {
+
             SignUpSchema.parse({name: username, password: password});
             if (password !== confPassword) throw new Error("Passwords don't match");
 
-            console.log("begin to register Data:", {username, password});
-            dbAddUser(username, password).then((res) => {
-                    console.log("User add finished");
+            // console.log("begin to register Data:", {username, password});
+            dbAddUser(username, password).then( () => {
+                    // console.log("User add finished");
 
                     const formData = new FormData()
                     formData.append("username", username);
                     formData.append("password", password);
+
                     signIn(username, formData, pathname).then((responseSign) => {
 
-                        const stringEnd =  responseSign.url.substring(responseSign.url.lastIndexOf('/', responseSign.url.lastIndexOf('/')-1))
-                        console.log("Response of sign in after register:", responseSign)
+                        const stringEnd =  responseSign.url.substring(responseSign.url.lastIndexOf('/', responseSign.url.lastIndexOf('/') - 1))
+                        // console.log("Response of sign in after register:", responseSign)
 
                         if (stringEnd === `/userPanel/${username}`) {
-                            console.log("Redirecting to:", responseSign)
+                            // console.log("Redirecting to:", responseSign)
                             router.push(responseSign.url);
                             return;
                         }
@@ -86,7 +88,7 @@ export default function RegisterForm() {
                     </p>
                     <input
                         className="bg-gray-800 border-2 box-border border-gray-600 rounded-xl text-[0.9rem] px-3 h-[2rem] shadow-xl shadow-gray-800
-                    focus:border-gray-300 placeholder:text-gray-300 placeholder:text-[0.9rem]"
+                                   focus:border-gray-300 placeholder:text-gray-300 placeholder:text-[0.9rem]"
                         name="username"
                         type="username"
                         placeholder="Enter username"
@@ -102,7 +104,7 @@ export default function RegisterForm() {
                     </p>
                     <input
                         className="bg-gray-800 border-2 box-border border-gray-600 rounded-xl text-[0.9rem] px-3 h-[2rem] shadow-xl shadow-gray-800
-                    focus:border-gray-300 placeholder:text-gray-300 placeholder:text-[0.9rem]"
+                                   focus:border-gray-300 placeholder:text-gray-300 placeholder:text-[0.9rem]"
                         name="password"
                         type="password"
                         placeholder="Enter password"
@@ -118,19 +120,19 @@ export default function RegisterForm() {
                     </p>
                     <input
                         className="bg-gray-800 border-2 box-border border-gray-600 rounded-xl text-[0.9rem] px-3 h-[2rem] shadow-xl shadow-gray-800
-                    focus:border-gray-300 placeholder:text-gray-300 placeholder:text-[0.9rem]"
+                                   focus:border-gray-300 placeholder:text-gray-300 placeholder:text-[0.9rem]"
                         name="confPassword"
                         type="password"
                         placeholder="Confirm password"
                         value={confPassword}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {setconfPassword(e.target.value)}}
+                        onChange={ (e: React.ChangeEvent<HTMLInputElement>) => {setConfPassword(e.target.value) }}
                         required
                     />
                 </div>
 
             </div>
 
-            { (error) && <p className='text-red-600'>{error?.toString()}</p>}
+            { (error) && <p className='text-red-600'>{error?.toString()}</p> }
 
             <div className='flex-grow-[2]'>
                 <SubmitButton label="Register" type="submit"/>

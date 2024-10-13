@@ -12,14 +12,14 @@ export default function LoginForm() {
     const router = useRouter()
     const {data: session, status} = useSession();
 
-    useEffect(() => {
+    useEffect( () => {
         if(status === 'authenticated') {
             console.log("Redirecting to user panel...")
             router.push(`/userPanel/${session?.user?.name}`);
         }
     }, [session?.user?.name, status, router]);
 
-    useEffect(() => {
+    useEffect( () => {
         const errorParam = searchParams?.get('error');
         if (errorParam) {
             setError(decodeURIComponent(errorParam));  // Decode the error param in case it is URL-encoded
@@ -36,6 +36,7 @@ export default function LoginForm() {
 
 
     const submitClickHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+
         e.preventDefault();
 
         const form = new FormData();
@@ -49,7 +50,7 @@ export default function LoginForm() {
 
             if(!response.ok) throw new Error();
 
-            console.log("Sign in finished with response:", response);
+            // console.log("Sign in finished with response:", response);
             router.push(response.url);
 
         } catch (error: any) {
@@ -57,12 +58,15 @@ export default function LoginForm() {
             setError(error.message || "Unexpected error");
             console.error("SignIn Error:", error);
             return;
+
         }
+
     }
 
 
     if(status === 'loading') return <div>Loading...</div>;
     return (
+
         <form
             onSubmit={submitClickHandler}
             className='flex flex-col h-full w-[90%] mt-6'
@@ -75,7 +79,7 @@ export default function LoginForm() {
                     </p>
                     <input
                         className="bg-gray-800 border-2 box-border border-gray-600 rounded-xl text-[0.9rem] px-3 h-[2rem] shadow-xl shadow-gray-800
-                    focus:border-gray-300 placeholder:text-gray-300 placeholder:text-[0.9rem]"
+                                   focus:border-gray-300 placeholder:text-gray-300 placeholder:text-[0.9rem]"
                         name="username"
                         type="text"
                         placeholder="Enter username"
@@ -93,7 +97,7 @@ export default function LoginForm() {
                     </p>
                     <input
                         className="bg-gray-800 border-2 box-border border-gray-600 rounded-xl text-[0.9rem] px-3 h-[2rem] shadow-xl shadow-gray-800
-                    focus:border-gray-300 placeholder:text-gray-300 placeholder:text-[0.9rem]"
+                                   focus:border-gray-300 placeholder:text-gray-300 placeholder:text-[0.9rem]"
                         name="password"
                         type="password"
                         placeholder="Enter password"
@@ -107,11 +111,13 @@ export default function LoginForm() {
 
             </div>
 
-            {error && <p className='text-red-600'>{error}</p>}
+            { error && <p className='text-red-600'>{error}</p> }
 
             <div className='flex-grow-[2]'>
-                <SubmitButton label="Log in" type="submit"/>
+                <SubmitButton label="Log in"
+                              type="submit"/>
             </div>
         </form>
+
     )
 }

@@ -1,9 +1,11 @@
 'use server'
 import {auth, BASE_PATH} from "@/auth";
 import {SessionProvider} from "next-auth/react";
+import React from "react";
 
 
 export async function AuthButtonWrapper(
+
     {className = "", children} : {className?: string | undefined, children: React.ReactNode} ) {
 
     const session = await auth()
@@ -15,10 +17,14 @@ export async function AuthButtonWrapper(
     }
 
     return (
+
         <div className={`${className}`}>
-        <SessionProvider basePath={BASE_PATH} session={session}>
-            {children}
-        </SessionProvider>
+            <SessionProvider basePath={BASE_PATH}
+                             session={session}
+            >
+                {children}
+            </SessionProvider>
         </div>
+
     )
 }

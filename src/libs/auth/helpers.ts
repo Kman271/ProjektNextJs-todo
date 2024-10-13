@@ -8,8 +8,7 @@ export async function signIn(username: string, formData: FormData, pathname: str
         const credentials: Record<string, any> = {};
         formData.forEach((v, k) => (credentials[k] = v));
 
-        console.log("FormData data is:", {...credentials, redirectTo: callbackUrl, redirect: false})
-        // console.log("Credientials:", credentials);
+        // console.log("FormData data is:", {...credentials, redirectTo: callbackUrl, redirect: false})
 
         const result: string = await nextAuthSignIn('credentials', {
             redirect: false,
@@ -17,7 +16,7 @@ export async function signIn(username: string, formData: FormData, pathname: str
             ...credentials
         });
         const stringEnd =  result.substring(result.lastIndexOf('/', result.lastIndexOf('/')-1))
-        console.log("SignIn result:", result, "callback:", callbackUrl, "result splited:", stringEnd, "are equal?", callbackUrl === stringEnd);
+        // console.log("SignIn result:", result, "callback:", callbackUrl, "result splited:", stringEnd, "are equal?", callbackUrl === stringEnd);
 
         if( callbackUrl !== stringEnd ) {
             console.error("SignIn failed");

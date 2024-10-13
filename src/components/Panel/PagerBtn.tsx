@@ -8,7 +8,9 @@ export default function PagerBtn({label, isCurrentPage, onClick}: {
 }) {
 
     return (
-        <button onClick={(e) => {
+
+        <button onClick={ (e) =>
+        {
             e.preventDefault();
             onClick(label);
         }}
@@ -17,6 +19,10 @@ export default function PagerBtn({label, isCurrentPage, onClick}: {
                         'bg-blue-500': isCurrentPage,
                         'bg-gray-800': !isCurrentPage
                     }
-                )}>{label.toString()}</button>
+                )}
+        >
+            {label.toString()}
+        </button>
+
     )
 }

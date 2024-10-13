@@ -16,7 +16,7 @@ export default function NotesList({userToken, data}: { userToken: string, data: 
     const pathname = usePathname();
     const searchParams = useSearchParams();
     let search: string = searchParams.get('search') || "";
-    let page: number = parseInt(searchParams.get('page') || '1') -1;
+    let page: number = parseInt(searchParams.get('page') || '1') - 1;
 
     const deleteHandler = useCallback( (ID: number, isDone: boolean) => {
         dbDeleteNote(userToken, ID, isDone).then(p => (p))
@@ -48,9 +48,10 @@ export default function NotesList({userToken, data}: { userToken: string, data: 
 
     const pagerClickHandler = useCallback(
         (newCurrentPage: number) => {
+
             router.push(pathname + '?' + setSearchParams('page', newCurrentPage))
-        }
-        , [router, pathname, setSearchParams]
+
+        }, [router, pathname, setSearchParams]
     )
 
     const generatedData = genData(data);
@@ -59,10 +60,12 @@ export default function NotesList({userToken, data}: { userToken: string, data: 
         .map((key) => parseInt(key));
 
     const completeClickHandler = useCallback( () => {
+
             dbUpdateList(genIDs).then(p => p);
             router.refresh();
-        }
-     , [genIDs, router] )
+
+        }, [genIDs, router]
+    )
 
     return (
         <div>

@@ -35,13 +35,14 @@ export default function AddBar({userToken}: { userToken: string }) {
 
 
     return (
+
         <form className='w-[98%] flex flex-row items-center justify-center space-x-2 mr-4 ml-auto mb-3'
         onSubmit={handleAdd}>
             <input required={true}
                    placeholder="Type note description here..."
 
                    className='p-2 pl-3 basis-full flex-shrink flex-grow rounded-md placeholder:text-gray-300 text-white
-                   bg-gradient-to-r from-gray-800 to-gray-700'
+                              bg-gradient-to-r from-gray-800 to-gray-700'
 
                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                        setNoteTxt(event.target?.value.toString())
@@ -63,5 +64,6 @@ export default function AddBar({userToken}: { userToken: string }) {
             </div>
             <AddBtn/>
         </form>
+
     )
 };

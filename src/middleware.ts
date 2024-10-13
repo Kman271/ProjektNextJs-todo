@@ -1,7 +1,6 @@
 import {NextResponse} from "next/server";
 import {auth} from "@/auth";
-import {getToken, GetTokenParams} from "@auth/core/jwt";
-import {getSession} from "next-auth/react";
+import {getToken} from "@auth/core/jwt";
 
 
 export const config = {

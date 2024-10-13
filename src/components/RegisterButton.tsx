@@ -1,19 +1,21 @@
 "use client"
 import RouteButton from "@/components/RouteButton";
 import {useRouter} from "next/navigation";
-import {signOut} from "@/libs/auth/helpers";
+import {buttonProps} from "@/libs/types/buttonTypes";
 
 
-export default function RegisterButton(
-    {className = ""} : {className?: string} ) {
+export default function RegisterButton(props: buttonProps) {
 
     const router = useRouter()
 
     return (
         <RouteButton label="Register"
                      className={`bg-gradient-to-br from-orange-500 to-orange-700 text-white
-                     ${className}`}
-                     onClick={(e) => {e.preventDefault(); router.push('auth/register')}}
+                     ${props.className}`}
+                     onClick={ (e) => {
+                         e.preventDefault();
+                         router.push('auth/register')
+                     }}
         />
     )
 }

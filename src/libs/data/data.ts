@@ -66,9 +66,12 @@ export async function dbAddNote(username: string, noteObj: noteJsonType) {
 
         console.log("Response for data sent:", response)
 
-    } catch (error: any) { console.error('DB send data Error:', error, "response:", response); throw error;
-
-    } finally { await dbDisconnect(client);}
+    } catch (error: any) {
+        console.error('DB send data Error:', error, "response:", response);
+        throw error;
+    } finally {
+        await dbDisconnect(client);
+    }
 
 }
 
@@ -87,9 +90,12 @@ export async function dbDeleteNote(username: string, noteId: number, isDone: boo
                                                                                         WHERE username = $1)`, username);
         console.log("Response for data delete:", response)
 
-    } catch (error: any) { console.error('DB delete data Error:', error, "response:", response); throw error;
-
-    } finally { await dbDisconnect(client);}
+    } catch (error: any) {
+        console.error('DB delete data Error:', error, "response:", response);
+        throw error;
+    } finally {
+        await dbDisconnect(client);
+    }
 
     return;
 }
@@ -166,15 +172,18 @@ export async function dbAddUser(username: string, password: string) {
     try {
         console.log("Getting users...");
         await client.$queryRaw`BEGIN;`;
+
         response = await client.$queryRawUnsafe(`INSERT INTO users(username, password)
-        VALUES($1,$2);`, username, password);
+                                                    VALUES($1,$2);`, username, password);
         console.log("Got response:", response);
+
         await client.$queryRaw`COMMIT;`
         console.log("Commit");
     } catch (error) {
-        await client.$queryRaw`ROLLBACK;`;
-        let errString: string = "Unknown error"
+        let errString;
+
         console.error("User Register Error:", error)
+        await client.$queryRaw`ROLLBACK;`;
 
         if(error instanceof Prisma.PrismaClientKnownRequestError) {
             switch (error.code) {
@@ -185,7 +194,7 @@ export async function dbAddUser(username: string, password: string) {
                     break;
             }
         }
-        throw new Error(errString);
+        throw new Error(errString || "Unknown error");
 
     } finally {
         await dbDisconnect(client)
