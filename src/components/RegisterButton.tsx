@@ -13,7 +13,7 @@ export default function RegisterButton(
         <RouteButton label="Register"
                      className={`bg-gradient-to-br from-orange-500 to-orange-700 text-white
                      ${className}`}
-                     onClick={(e) => {e.preventDefault();signOut("/auth/register").then()}}
+                     onClick={(e) => {e.preventDefault(); router.push('auth/register')}}
         />
     )
 }

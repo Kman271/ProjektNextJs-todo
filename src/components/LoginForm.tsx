@@ -2,7 +2,7 @@
 import React, {useEffect, useState} from "react";
 import SubmitButton from "@/components/SubmitButton";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
-import {signIn, signOut} from "@/libs/auth/helpers";
+import {signIn} from "@/libs/auth/helpers";
 import {useSession} from "next-auth/react";
 
 export default function LoginForm() {
@@ -14,8 +14,8 @@ export default function LoginForm() {
 
     useEffect(() => {
         if(status === 'authenticated') {
-            console.log("Client session logging out")
-            signOut('/auth/login').then();
+            console.log("Redirecting to user panel...")
+            router.push(`/userPanel/${session?.user?.name}`);
         }
     }, [session?.user?.name, status, router]);
 

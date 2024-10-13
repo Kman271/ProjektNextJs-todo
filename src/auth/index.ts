@@ -4,6 +4,14 @@ import {dbGetUsers} from "@/libs/data/data";
 import {userType} from "@/libs/types/dataTypes";
 import {JWT} from "@auth/core/jwt";
 import {Session} from "next-auth";
+import {PrismaAdapter} from "@auth/prisma-adapter";
+import { PrismaClient } from "@prisma/client"
+
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
+
+export const prisma = globalForPrisma.prisma || new PrismaClient()
+
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma
 
 export const BASE_PATH = '/api/auth';
 const isProduction = process.env.NODE_ENV === "production";
@@ -97,7 +105,7 @@ export const authOptions: NextAuthConfig =  {
         error: '/auth/login'
     },
     basePath: BASE_PATH,
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: process.env.NEXTAUTH_SECRET
 };
 
 export const {handlers, signIn, signOut, auth} = NextAuth(authOptions)
