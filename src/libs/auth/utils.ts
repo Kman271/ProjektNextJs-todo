@@ -16,8 +16,9 @@ export default function useSessionValidation() {
             console.log("token expiration:", tokenExpiration, "time now:", currentTime);
 
             if (currentTime > tokenExpiration) {
-                alert('Session expired. You will be logged out.');
-                signOut().then();
+                signOut().then(
+                    () => alert('Session expired. You will be logged out.')
+                );
             }
         }
     }, [session]);
