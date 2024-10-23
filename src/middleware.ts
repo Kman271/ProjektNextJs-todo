@@ -33,6 +33,7 @@ export default auth(async (req) => {
         }
 
         // if logged in redirect from sign form to panel
+        console.log("token is:", token);
         if(token && ['/auth/login', '/auth/register'].includes(pathname)) {
             return NextResponse.redirect(
                 new URL(`/userPanel/${username}`,
