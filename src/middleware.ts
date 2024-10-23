@@ -1,10 +1,6 @@
 import {NextResponse} from "next/server";
 import {auth} from "@/auth";
 import {getToken} from "@auth/core/jwt";
-import {useSession} from "next-auth/react";
-import {useEffect} from "react";
-import {signOut} from "@/libs/auth/helpers";
-
 
 
 export const config = {

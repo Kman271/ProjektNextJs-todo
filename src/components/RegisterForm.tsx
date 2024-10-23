@@ -7,8 +7,10 @@ import {SignUpSchema} from "@/libs/auth/definitions";
 import {dbAddUser} from "@/libs/data/data";
 import {z} from "zod"
 import {signIn} from "@/libs/auth/helpers";
+import useSessionValidation from "@/libs/auth/utils";
 
 export default function RegisterForm() {
+    useSessionValidation();
 
     const router = useRouter()
     const {data: session, status} = useSession();

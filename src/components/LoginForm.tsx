@@ -4,8 +4,11 @@ import SubmitButton from "@/components/SubmitButton";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
 import {signIn} from "@/libs/auth/helpers";
 import {useSession} from "next-auth/react";
+import useSessionValidation from "@/libs/auth/utils";
 
 export default function LoginForm() {
+
+    useSessionValidation();
 
     const pathname = usePathname();
     const searchParams = useSearchParams();

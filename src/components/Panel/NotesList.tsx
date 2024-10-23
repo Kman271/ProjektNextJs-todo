@@ -7,9 +7,12 @@ import NoteBar from "@/components/Panel/NoteBar";
 import AddBar from "@/components/Panel/AddBar";
 import PagerBar from "@/components/Panel/PagerBar";
 import CompleteBtn from "@/components/Panel/CompleteBtn";
+import useSessionValidation from "@/libs/auth/utils";
+
 
 export default function NotesList({userToken, data}: { userToken: string, data: noteJsonType[] }) {
 
+    useSessionValidation();
     const [isCheckedArr, setCheckedArr] = useState<{ [key: number] : boolean }>({});
 
     const router = useRouter();
