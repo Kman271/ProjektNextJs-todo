@@ -6,6 +6,7 @@ import {JWT} from "@auth/core/jwt";
 import {Session} from "next-auth";
 import {PrismaAdapter} from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client"
+import {compareHashedPassword} from "@/libs/data/utils";
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
 
@@ -14,7 +15,7 @@ export const prisma = globalForPrisma.prisma || new PrismaClient()
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma
 
 export const BASE_PATH = '/api/auth';
-const isProduction = process.env.NODE_ENV === "production";
+//const isProduction = process.env.NODE_ENV === "production";
 
 export const authOptions: NextAuthConfig =  {
     // debug: process.env.NODE_ENV === 'development',
@@ -39,7 +40,7 @@ export const authOptions: NextAuthConfig =  {
 
                     const user = users.find((u: userType) =>
                         u.username.toString() == username?.toString() &&
-                        u.password.toString() == password?.toString()
+                        compareHashedPassword(u.password.toString(), password?.toString() || "")
                     );
 
                     if(!user) {

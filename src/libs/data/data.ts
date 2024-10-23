@@ -3,6 +3,8 @@ import {noteJsonType} from "@/libs/types/noteType";
 import {dbConnect, dbDisconnect} from "@/libs/data/db";
 import {switchType, userType} from "@/libs/types/dataTypes";
 import {Prisma} from "@prisma/client";
+import bcrypt from "bcrypt";
+import {saltAndHashPassword} from "@/libs/data/utils";
 
 
 function getDatabaseName(isDone: boolean) {
@@ -168,13 +170,14 @@ export async function dbGetUsers() {
 export async function dbAddUser(username: string, password: string) {
     const client = await dbConnect();
     let response: any;
+    const hashedPass = await saltAndHashPassword(password);
 
     try {
         console.log("Getting users...");
         await client.$queryRaw`BEGIN;`;
 
         response = await client.$queryRawUnsafe(`INSERT INTO users(username, password)
-                                                    VALUES($1,$2);`, username, password);
+                                                    VALUES($1,$2);`, username, hashedPass);
         console.log("Got response:", response);
 
         await client.$queryRaw`COMMIT;`
@@ -185,10 +188,11 @@ export async function dbAddUser(username: string, password: string) {
         console.error("User Register Error:", error)
         await client.$queryRaw`ROLLBACK;`;
 
+        console.log("Got error:", error);
         if(error instanceof Prisma.PrismaClientKnownRequestError) {
             switch (error.code) {
                 case 'P2010':
-                    errString = "User already exists";
+                    errString = "Wrong credentials";
                     break;
                 default:
                     break;
