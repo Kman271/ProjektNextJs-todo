@@ -4,10 +4,10 @@ import {dbGetUsers} from "@/libs/data/data";
 import {userType} from "@/libs/types/dataTypes";
 import {JWT} from "@auth/core/jwt";
 import {Session} from "next-auth";
-import {PrismaAdapter} from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client"
 import {compareHashedPassword} from "@/libs/data/utils";
 
+const TOKEN_TIME_LIMIT = 30*60; //30 minutes
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
 
 export const prisma = globalForPrisma.prisma || new PrismaClient()
@@ -80,9 +80,18 @@ export const authOptions: NextAuthConfig =  {
         },
 
             async jwt({ token, user } : {token: JWT, user?: User|null}) {
+
                 if (user) {
+                    token.iat = Math.floor(Date.now() / 1000)
                     token.id = user.id?.toString(); // Assign user details to the token
                 }
+
+                const currentTime = Math.floor(Date.now() / 1000)
+
+                if(token.iat && currentTime - token.iat > TOKEN_TIME_LIMIT) {
+                    return null;
+                }
+
                 return token;
             },
 
