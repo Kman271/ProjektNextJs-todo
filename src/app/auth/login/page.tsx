@@ -1,10 +1,10 @@
 import LoginWindow from "@/components/LoginWindow";
-import {AuthButtonWrapper} from "@/components/AuthButtonWrapper";
+import {AuthSessionWrapper} from "@/components/AuthSessionWrapper";
 
 export default function LoginPage() {
     return(
-        <AuthButtonWrapper>
+        <AuthSessionWrapper>
             <LoginWindow/>
-        </AuthButtonWrapper>
+        </AuthSessionWrapper>
     )
 }

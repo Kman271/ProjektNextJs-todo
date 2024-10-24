@@ -48,7 +48,7 @@ export default function LoginForm() {
 
         try {
 
-            console.log("begin to sign in with formData:", form);
+            // console.log("begin to sign in with formData:", form);
             const response = await signIn(username, form, pathname);
 
             if(!response.ok) throw new Error();

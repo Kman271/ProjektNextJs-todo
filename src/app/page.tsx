@@ -3,7 +3,7 @@ import LoginButton from "@/components/LoginButton";
 import React from "react";
 import RegisterButton from "@/components/RegisterButton";
 import Image from "next/image";
-import {AuthButtonWrapper} from "@/components/AuthButtonWrapper";
+import {AuthSessionWrapper} from "@/components/AuthSessionWrapper";
 
 export default async function Home() {
 
@@ -27,10 +27,10 @@ export default async function Home() {
                 <div className="mx-auto w-fit">
                     <p className="mx-auto mb-4 w-fit text-[1.25rem] font-bold drop-shadow-xl">
                         click on the buttons below to begin your journey!</p>
-                    <AuthButtonWrapper className="flex flex-row justify-center space-x-3">
+                    <AuthSessionWrapper className="flex flex-row justify-center space-x-3">
                         <LoginButton/>
                         <RegisterButton/>
-                    </AuthButtonWrapper>
+                    </AuthSessionWrapper>
                 </div>
 
             </main>

@@ -4,7 +4,7 @@ import {SessionProvider} from "next-auth/react";
 import React from "react";
 
 
-export async function AuthButtonWrapper(
+export async function AuthSessionWrapper(
 
     {className = "", children} : {className?: string | undefined, children: React.ReactNode} ) {
 
@@ -12,7 +12,7 @@ export async function AuthButtonWrapper(
     if(session && session.user) {
         session.user = {
             name: session.user.name,
-            email: session.user.email
+            //email: session.user.email
         }
     }
 

@@ -84,6 +84,8 @@ export const authOptions: NextAuthConfig =  {
                 if (user) {
                     token.iat = Math.floor(Date.now() / 1000)
                     token.id = user.id?.toString(); // Assign user details to the token
+
+                    // console.log("JWT token:", token);
                 }
 
                 const currentTime = Math.floor(Date.now() / 1000)
