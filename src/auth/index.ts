@@ -114,6 +114,19 @@ export const authOptions: NextAuthConfig =  {
 
     },
 
+    cookies: {
+        sessionToken: {
+            name: 'next-auth.session-token', // Customize the cookie name
+            options: {
+                httpOnly: true, // Prevent JavaScript from accessing the cookie
+                secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+                sameSite: "lax", // Use Lax for CSRF protection
+                path: "/", // Cookie path
+                maxAge: TOKEN_TIME_LIMIT, // Cookie expiration
+            },
+        },
+    },
+
     pages: {
         signIn: '/auth/login',
         signOut: '/',

@@ -23,7 +23,7 @@ export default auth(async (req) => {
         const token = await getToken({
             req,
             secret: process.env.NEXTAUTH_SECRET,
-            // cookieName: "next-auth.session-token"
+            cookieName: "next-auth.session-token"
         });
         console.log("Retrieved token:", token);
 
