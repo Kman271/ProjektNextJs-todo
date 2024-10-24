@@ -1,20 +1,19 @@
-'use server'
+'use client'
 import {auth, BASE_PATH} from "@/auth";
 import {SessionProvider} from "next-auth/react";
 import React from "react";
 
 
-export async function AuthSessionWrapper(
+export function AuthSessionWrapper(
 
-    {className = "", children} : {className?: string | undefined, children: React.ReactNode} ) {
+    {className = "", children, session = undefined} : {className?: string | undefined, children: React.ReactNode, session?: any} ) {
 
-    const session = await auth()
-    if(session && session.user) {
-        session.user = {
-            name: session.user.name,
-            //email: session.user.email
-        }
-    }
+    // const session = await auth()
+    // if(session && session.user) {
+    //     session.user = {
+    //         name: session.user.name,
+    //     }
+    // }
 
     return (
 

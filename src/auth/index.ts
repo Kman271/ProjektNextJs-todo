@@ -21,6 +21,8 @@ export const authOptions: NextAuthConfig =  {
     // debug: process.env.NODE_ENV === 'development',
     session: {
       strategy: 'jwt',
+        maxAge: TOKEN_TIME_LIMIT,
+        //updateAge: TOKEN_TIME_LIMIT
 
     },
     providers: [

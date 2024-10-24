@@ -12,7 +12,7 @@ import {redirect} from "next/navigation";
 export default async function UserPanelPage({ params }: { params: { userToken: string } }) {
 
 
-    const session = await getServerSession(authOptions);
+    const session = getServerSession(authOptions);
     if (!session) {
         redirect("/auth/login");
         return;
@@ -20,6 +20,6 @@ export default async function UserPanelPage({ params }: { params: { userToken: s
     const dataPending: noteJsonType[] = await getData(params.userToken, 'pending' as switchType);
 
     return (
-        <PanelContent userToken={params.userToken} data={dataPending}/>
+        <PanelContent userToken={params.userToken} data={dataPending} session={session}/>
     )
 }

@@ -1,11 +1,11 @@
-'use server'
+'use client'
 
 import React from "react";
 import SearchBar from "@/components/Panel/SearchBar";
 import NotesList from "@/components/Panel/NotesList";
 import {noteJsonType} from "@/libs/types/noteType";
 
-export default async function NotesBox({userToken, data} : {userToken: string, data: noteJsonType[] }) {
+export default function NotesBox({userToken, data} : {userToken: string, data: noteJsonType[] }) {
 
     return (
 

@@ -4,8 +4,6 @@ import {AuthSessionWrapper} from "@/components/AuthSessionWrapper";
 
 export default function RegisterPage() {
     return(
-        <AuthSessionWrapper>
             <RegisterWindow/>
-        </AuthSessionWrapper>
     )
 }

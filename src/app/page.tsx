@@ -27,10 +27,10 @@ export default async function Home() {
                 <div className="mx-auto w-fit">
                     <p className="mx-auto mb-4 w-fit text-[1.25rem] font-bold drop-shadow-xl">
                         click on the buttons below to begin your journey!</p>
-                    <AuthSessionWrapper className="flex flex-row justify-center space-x-3">
+                    <div className="flex flex-row justify-center space-x-3">
                         <LoginButton/>
                         <RegisterButton/>
-                    </AuthSessionWrapper>
+                    </div>
                 </div>
 
             </main>
