@@ -22,6 +22,7 @@ export const authOptions: NextAuthConfig =  {
     session: {
       strategy: 'jwt',
         maxAge: TOKEN_TIME_LIMIT,
+
         //updateAge: TOKEN_TIME_LIMIT
 
     },

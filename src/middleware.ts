@@ -18,8 +18,13 @@ export default auth(async (req) => {
             throw new Error("NEXTAUTH_SECRET is undefined, needed in middleware!");
         }
 
+        console.log("Request is:", req);
         console.log("Request cookies in middleware:", req.cookies);
-        const token = await getToken({req, secret: process.env.NEXTAUTH_SECRET});
+        const token = await getToken({
+            req,
+            secret: process.env.NEXTAUTH_SECRET,
+            // cookieName: "next-auth.session-token"
+        });
         console.log("Retrieved token:", token);
 
         const username = token?.name || "unknown";
