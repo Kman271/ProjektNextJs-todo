@@ -12,6 +12,7 @@ export default auth(async (req) => {
     try {
 
         const pathname = req.nextUrl.pathname;
+        let username = "unknown";
 
         if(process.env.NEXTAUTH_SECRET === undefined) {
             console.log("NEXTAUTH_SECRET is undefined, needed in middleware!")
@@ -27,7 +28,7 @@ export default auth(async (req) => {
         });
         console.log("Retrieved token:", token);
 
-        const username = token?.name || "unknown";
+        username = token?.name || "unknown";
 
         console.log("Requested pathname:", pathname)
 

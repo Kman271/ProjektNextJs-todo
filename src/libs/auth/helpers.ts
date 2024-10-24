@@ -36,7 +36,7 @@ export async function signOut(newUrl?: string) {
 
     if (newUrl) {
         await nextAuthSignOut({
-            redirectTo: newUrl,
+            redirectTo: newUrl || '/',
         })
     }
     await nextAuthSignOut({
